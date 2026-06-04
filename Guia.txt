@@ -1,0 +1,205 @@
+PASOS PARA LEVANTAR EL PROYECTO SI:
+
+============================================================
+ORDEN DE ARRANQUE (PROD / docker compose)
+============================================================
+
+1) INFRAESTRUCTURA (config-server, eureka, gateway)
+   cd infra
+   copy .env.example .env       # (solo la primera vez)
+   docker compose up -d --build
+
+2) KAFKA (broker + UI + exporter)
+   cd ..\kafka
+   docker compose up -d --build
+   # Kafka UI:        http://localhost:28085
+   # Kafka exporter:  http://localhost:29308
+   # Bootstrap host:  localhost:29092
+
+3) OBSERVABILIDAD (prometheus, loki, promtail, grafana)
+   cd ..\observability
+   docker compose up -d --build
+   # Prometheus:  http://localhost:19090
+   # Grafana:     http://localhost:13000  (admin/admin)
+   # Loki:        http://localhost:23100
+
+4) AUTH SERVICE
+   cd ..\services\auth
+   docker compose up -d --build
+
+5) CATALOGO SERVICE
+   cd ..\catalogo
+   docker compose up -d --build
+
+6) PRODUCTO SERVICE
+   cd ..\producto
+   docker compose up -d --build
+
+7) PEDIDO SERVICE
+   cd ..\pedido
+   docker compose up -d --build
+
+8) PAGO SERVICE
+   cd ..\pago
+   docker compose up -d --build
+
+============================================================
+ORDEN DE ARRANQUE (DEV / desde IDE)
+============================================================
+
+Levanta SOLO las dependencias en Docker (-dev):
+   cd kafka            && docker compose -f docker-compose-dev.yml up -d
+   cd ..\observability && docker compose -f docker-compose-dev.yml up -d
+   cd ..\services\auth     && docker compose -f docker-compose-dev.yml up -d
+   cd ..\catalogo          && docker compose -f docker-compose-dev.yml up -d
+   cd ..\producto          && docker compose -f docker-compose-dev.yml up -d
+   cd ..\pedido            && docker compose -f docker-compose-dev.yml up -d
+   cd ..\pago              && docker compose -f docker-compose-dev.yml up -d
+
+Después, en el IDE / consola corre cada Spring Boot EN ESTE ORDEN
+(con `mvn spring-boot:run` desde la carpeta del servicio):
+   1. infra/config-server      -> http://localhost:7071
+   2. infra/registry-server    -> http://localhost:7081
+   3. infra/gateway            -> http://localhost:7091
+   4. services/auth            -> http://localhost:8041
+   5. services/catalogo        -> http://localhost:8081
+   6. services/producto        -> http://localhost:9091
+   7. services/pedido          -> http://localhost:9101
+   8. services/pago            -> http://localhost:9111
+
+============================================================
+ENDPOINTS CLAVE (DEV)
+============================================================
+
+CONFIG SERVER:
+  http://localhost:7071/producto/dev
+  http://localhost:7071/catalogo/dev
+  http://localhost:7071/gateway/dev
+  http://localhost:7071/auth/dev
+  http://localhost:7071/pedido/dev
+  http://localhost:7071/pago/dev
+
+EUREKA:        http://localhost:7081/        (deben aparecer: AUTH, GATEWAY, CATALOGO, PRODUCTO, PEDIDO, PAGO)
+
+GATEWAY (entrada única):
+  http://localhost:7091/auth/login                (POST público)
+  http://localhost:7091/auth/register             (POST público)
+  http://localhost:7091/api/v1/categorias         (requiere JWT)
+  http://localhost:7091/api/v1/productos          (GET requiere JWT; POST/PUT/DELETE requieren ROLE_ADMIN)
+  http://localhost:7091/api/v1/pedidos            (requiere JWT — publica evento Kafka al crear)
+  http://localhost:7091/api/v1/pagos              (requiere JWT)
+
+SWAGGER directo:
+  http://localhost:8041/swagger-ui/index.html   (auth)
+  http://localhost:8081/swagger-ui/index.html   (catalogo)
+  http://localhost:9091/swagger-ui/index.html   (producto)
+  http://localhost:9101/swagger-ui/index.html   (pedido)
+  http://localhost:9111/swagger-ui/index.html   (pago)
+
+ACTUATOR (cada servicio):
+  http://localhost:<port>/actuator/health
+  http://localhost:<port>/actuator/metrics
+  http://localhost:<port>/actuator/prometheus
+
+OBSERVABILIDAD:
+  Prometheus:  http://localhost:19090           (targets: /targets)
+  Grafana:     http://localhost:13000           (admin/admin)
+
+KAFKA:
+  Kafka UI:        http://localhost:41085 (dev) | 28085 (prod)
+  Bootstrap host:  localhost:41092       (dev) | 29092 (prod)
+
+============================================================
+USUARIOS CARGADOS (DataInitializer)
+============================================================
+  admin / admin123   (rol ADMIN)
+  user  / user123    (rol USER)
+
+============================================================
+PRUEBA DEL FLUJO COMPLETO (PowerShell)
+============================================================
+
+# 1. LOGIN (público, vía Gateway)
+$body = @{ username = "admin"; password = "admin123" } | ConvertTo-Json
+$res  = Invoke-RestMethod -Method Post `
+         -Uri "http://localhost:7091/auth/login" `
+         -ContentType "application/json" -Body $body
+$token = $res.accessToken
+$token   # imprime el JWT
+
+# 2. SIN token → 401
+try { Invoke-WebRequest -Uri "http://localhost:7091/api/v1/productos" } catch { $_.Exception.Response.StatusCode }
+
+# 3. CON token válido → 200
+Invoke-RestMethod -Method Get `
+   -Uri "http://localhost:7091/api/v1/productos" `
+   -Headers @{ Authorization = "Bearer $token" }
+
+# 4. POST/PUT/DELETE en productos: requiere ROLE_ADMIN
+$nuevo = @{ nombre = "Producto JWT"; descripcion = "demo"; idCategoria = 1 } | ConvertTo-Json
+Invoke-RestMethod -Method Post `
+   -Uri "http://localhost:7091/api/v1/productos" `
+   -Headers @{ Authorization = "Bearer $token" } `
+   -ContentType "application/json" -Body $nuevo
+
+# 5. REGISTER nuevo usuario (rol USER)
+$reg = @{ username = "juan"; password = "123456" } | ConvertTo-Json
+Invoke-RestMethod -Method Post `
+   -Uri "http://localhost:7091/auth/register" `
+   -ContentType "application/json" -Body $reg
+
+# 6. FLUJO KAFKA (ORDEN -> EVENTO -> KAFKA -> PAGO)
+# Crear pedido: pedido publica al topic 'orden-eventos', pago lo consume.
+$pedido = @{ cliente = "Juan"; estado = "NUEVO"; observacion = "demo kafka" } | ConvertTo-Json
+Invoke-RestMethod -Method Post `
+   -Uri "http://localhost:7091/api/v1/pedidos" `
+   -Headers @{ Authorization = "Bearer $token" } `
+   -ContentType "application/json" -Body $pedido
+
+# Verificar consumo en logs de pago (debe aparecer "Evento OrdenCreada recibido")
+docker logs -f pago-prod-pago-1     # (en prod docker)
+# o si pago corre en IDE: mira la consola del proceso pago
+
+# 7. CIRCUIT BREAKER (producto -> catalogo con Feign)
+# Baja catalogo y consulta:
+Invoke-RestMethod -Method Get `
+   -Uri "http://localhost:7091/api/v1/productos/detalle/1" `
+   -Headers @{ Authorization = "Bearer $token" }
+# La respuesta debe traer categoria: null (fallback) en lugar de 500.
+
+============================================================
+COMANDOS KAFKA (dentro del contenedor)
+============================================================
+docker compose -f docker-compose-dev.yml exec kafka bash
+
+# Listar topics
+/opt/kafka/bin/kafka-topics.sh --list --bootstrap-server kafka:9092
+
+# Crear topic manualmente (también se autocrea por configuración)
+/opt/kafka/bin/kafka-topics.sh --create --topic orden-eventos \
+  --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1
+
+# Consumer
+/opt/kafka/bin/kafka-console-consumer.sh --topic orden-eventos \
+  --bootstrap-server kafka:9092 --from-beginning
+
+# Producer
+/opt/kafka/bin/kafka-console-producer.sh --topic orden-eventos \
+  --bootstrap-server kafka:9092
+
+============================================================
+QUERIES ÚTILES
+============================================================
+Prometheus (http://localhost:19090):
+  up
+  sum by (job) (rate(http_server_requests_seconds_count[1m]))
+  sum by (job) (jvm_memory_used_bytes)
+  avg by (job) (system_cpu_usage)
+
+Loki (Grafana http://localhost:13000):
+  {service="gateway"}
+  {service="auth"}
+  {service="producto"} |= "[PRODUCTO]"
+  {service="catalogo"} |= "[CATALOGO]"
+  {service="pedido"}  |= "[PEDIDO]"
+  {service="pago"}    |= "[PAGO]"
