@@ -12,6 +12,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "pedidos")
 @Getter
@@ -25,6 +28,9 @@ public class Pedido {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(name = "user_id", nullable = false)
+	private Long userId;
+
 	@Column(name = "cliente", nullable = false, length = 100)
 	private String cliente;
 
@@ -33,4 +39,13 @@ public class Pedido {
 
 	@Column(name = "observacion", length = 255)
 	private String observacion;
+
+	@Column(name = "direccion_envio", length = 255)
+	private String direccionEnvio;
+
+	@Column(name = "total", nullable = false, precision = 12, scale = 2)
+	private BigDecimal total;
+
+	@Column(name = "created_at", nullable = false)
+	private LocalDateTime createdAt;
 }

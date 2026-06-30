@@ -28,6 +28,19 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
 	}
 
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<ApiErrorResponse> handleIllegalArgument(IllegalArgumentException ex,
+			HttpServletRequest request) {
+		ApiErrorResponse error = ApiErrorResponse.builder()
+				.timestamp(LocalDateTime.now())
+				.status(HttpStatus.BAD_REQUEST.value())
+				.error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+				.message(ex.getMessage())
+				.path(request.getRequestURI())
+				.build();
+		return ResponseEntity.badRequest().body(error);
+	}
+
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ApiErrorResponse> handleValidation(MethodArgumentNotValidException ex,
 			HttpServletRequest request) {

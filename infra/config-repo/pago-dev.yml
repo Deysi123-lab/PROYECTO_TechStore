@@ -29,23 +29,6 @@ eureka:
     service-url:
       defaultZone: http://localhost:7081/eureka
 
-spring.kafka:
-  bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:41092}
-  consumer:
-    group-id: pago-consumer
-    auto-offset-reset: earliest
-    key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-    value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-    properties:
-      spring.json.trusted.packages: "com.upeu.pago.event,com.upeu.pedido.event,*"
-      spring.json.value.default.type: com.upeu.pago.event.OrdenCreadaEvent
-      spring.json.use.type.headers: false
-
-app:
-  kafka:
-    topics:
-      orden-eventos: orden-eventos
-
 springdoc:
   swagger-ui:
     path: /swagger-ui.html

@@ -41,17 +41,24 @@ public class AuthService {
         );
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        AuthUser user = authUserRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuario no encontrado"));
         String token = jwtService.generateToken(userDetails);
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList();
 
         return AuthLoginResponse.builder()
+                .userId(user.getId())
                 .accessToken(token)
                 .tokenType("Bearer")
                 .expiresIn(jwtProperties.getExpiration())
                 .username(userDetails.getUsername())
                 .roles(roles)
+                .nombreCompleto(user.getNombreCompleto())
+                .email(user.getEmail())
+                .nombres(user.getNombres())
+                .apellidos(user.getApellidos())
                 .build();
     }
 
@@ -62,12 +69,28 @@ public class AuthService {
                     "El usuario '" + request.getUsername() + "' ya existe");
         }
 
+        String email = request.getEmail() != null && !request.getEmail().isBlank()
+                ? request.getEmail()
+                : request.getUsername() + "@techstore.com";
+        if (authUserRepository.existsByEmail(email)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "El correo '" + email + "' ya está registrado");
+        }
+
         Role userRole = roleRepository.findByName("USER")
                 .orElseGet(() -> roleRepository.save(Role.builder().name("USER").build()));
+
+        String nombreCompleto = request.getNombreCompleto() != null && !request.getNombreCompleto().isBlank()
+                ? request.getNombreCompleto()
+                : request.getUsername();
 
         AuthUser nuevo = AuthUser.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
+                .nombreCompleto(nombreCompleto)
+                .email(email)
+                .nombres(nombreCompleto.contains(" ") ? nombreCompleto.substring(0, nombreCompleto.indexOf(' ')) : nombreCompleto)
+                .apellidos(nombreCompleto.contains(" ") ? nombreCompleto.substring(nombreCompleto.indexOf(' ') + 1) : "")
                 .enabled(true)
                 .roles(Set.of(userRole))
                 .build();
@@ -77,6 +100,8 @@ public class AuthService {
                 .id(saved.getId())
                 .username(saved.getUsername())
                 .roles(saved.getRoles().stream().map(Role::getName).toList())
+                .nombreCompleto(saved.getNombreCompleto())
+                .email(saved.getEmail())
                 .build();
     }
 }

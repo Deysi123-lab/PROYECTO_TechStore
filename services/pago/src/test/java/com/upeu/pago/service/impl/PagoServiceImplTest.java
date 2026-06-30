@@ -1,7 +1,9 @@
 package com.upeu.pago.service.impl;
 
+import com.upeu.pago.client.PedidoClient;
 import com.upeu.pago.dto.PagoRequest;
 import com.upeu.pago.dto.PagoResponse;
+import com.upeu.pago.dto.PedidoDto;
 import com.upeu.pago.entity.Pago;
 import com.upeu.pago.exception.ResourceNotFoundException;
 import com.upeu.pago.mapper.PagoMapper;
@@ -27,6 +29,9 @@ class PagoServiceImplTest {
 	@Mock
 	private PagoRepository pagoRepository;
 
+	@Mock
+	private PedidoClient pedidoClient;
+
 	@Spy
 	private PagoMapper pagoMapper = new PagoMapper();
 
@@ -41,13 +46,22 @@ class PagoServiceImplTest {
 				.metodo("TARJETA")
 				.estado("PENDIENTE")
 				.build();
+		PedidoDto pedido = PedidoDto.builder()
+				.id(1L)
+				.userId(1L)
+				.total(new BigDecimal("50.00"))
+				.build();
 		Pago saved = Pago.builder()
 				.id(1L)
 				.idPedido(1L)
+				.userId(1L)
 				.monto(new BigDecimal("50.00"))
 				.metodo("TARJETA")
 				.estado("PENDIENTE")
 				.build();
+
+		when(pagoRepository.existsByIdPedido(1L)).thenReturn(false);
+		when(pedidoClient.findById(1L)).thenReturn(pedido);
 		when(pagoRepository.save(any(Pago.class))).thenReturn(saved);
 
 		PagoResponse response = pagoService.create(request);

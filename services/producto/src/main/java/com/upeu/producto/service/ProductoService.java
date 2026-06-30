@@ -1,5 +1,6 @@
 package com.upeu.producto.service;
 
+import com.upeu.producto.dto.DescontarStockRequest;
 import com.upeu.producto.dto.ProductoRequest;
 import com.upeu.producto.dto.ProductoResponse;
 
@@ -11,11 +12,13 @@ public interface ProductoService {
 
     List<ProductoResponse> findAll();
 
-    ProductoResponse findById(Integer id);
+    ProductoResponse findById(Long id);
 
-    ProductoResponse update(Integer id, ProductoRequest request);
+    ProductoResponse update(Long id, ProductoRequest request);
 
-    void delete(Integer id);
+    void delete(Long id);
 
-    ProductoResponse findDetalleById(Integer id);
+    ProductoResponse findDetalleById(Long id);
+
+    ProductoResponse descontarStock(Long id, DescontarStockRequest request);
 }

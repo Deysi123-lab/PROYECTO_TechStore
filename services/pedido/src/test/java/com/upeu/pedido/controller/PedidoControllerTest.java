@@ -50,8 +50,10 @@ class PedidoControllerTest {
 	@Test
 	void shouldValidateCreateRequest() throws Exception {
 		PedidoRequest request = PedidoRequest.builder()
+				.userId(null)
 				.cliente("")
 				.estado("PENDIENTE")
+				.items(List.of())
 				.build();
 
 		mockMvc.perform(post("/api/v1/pedidos")

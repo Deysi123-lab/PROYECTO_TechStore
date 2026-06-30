@@ -12,4 +12,6 @@ public class AuthRegisterResponse {
     private Long id;
     private String username;
     private List<String> roles;
+    private String nombreCompleto;
+    private String email;
 }

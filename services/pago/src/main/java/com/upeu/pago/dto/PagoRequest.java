@@ -33,4 +33,7 @@ public class PagoRequest {
 	@NotBlank(message = "El estado es obligatorio")
 	@Size(max = 50, message = "El estado no debe superar los 50 caracteres")
 	private String estado;
+
+	@Size(max = 100, message = "La referencia no debe superar los 100 caracteres")
+	private String referenciaTransaccion;
 }

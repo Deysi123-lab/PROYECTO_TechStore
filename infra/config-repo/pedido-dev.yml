@@ -8,7 +8,7 @@ spring:
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
   flyway:
-    enabled: false
+    enabled: true
 
   jpa:
     hibernate:
@@ -28,19 +28,6 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:7081/eureka
-
-spring.kafka:
-  bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:41092}
-  producer:
-    key-serializer: org.apache.kafka.common.serialization.StringSerializer
-    value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-    properties:
-      spring.json.add.type.headers: false
-
-app:
-  kafka:
-    topics:
-      orden-eventos: orden-eventos
 
 springdoc:
   swagger-ui:

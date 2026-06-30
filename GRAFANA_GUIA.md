@@ -50,7 +50,7 @@ Si alguno aparece en `0`, ese servicio NO está corriendo.
 up{job=~".*-dev"}
 ```
 
-✅ **Esperado**: 7 líneas: auth-dev, gateway-dev, catalogo-dev, producto-dev, pedido-dev, pago-dev, kafka-exporter-dev.
+✅ **Esperado**: 6 líneas: auth-dev, gateway-dev, catalogo-dev, producto-dev, pedido-dev, pago-dev.
 
 ### 1.3 — Generar tráfico antes (en PowerShell)
 
@@ -195,45 +195,7 @@ process_uptime_seconds
 
 ---
 
-## 📨 PRUEBA 6 — KAFKA (con kafka-exporter)
-
-### 6.1 — Broker visible
-
-```text
-kafka_brokers
-```
-
-✅ Debe devolver `1`.
-
-### 6.2 — Info del broker
-
-```text
-kafka_broker_info
-```
-
-### 6.3 — Offset del topic orden-eventos
-
-```text
-kafka_topic_partition_current_offset{topic="orden-eventos"}
-```
-
-### 6.4 — Lag del consumer group de pago
-
-```text
-kafka_consumergroup_lag{consumergroup="pago-consumer"}
-```
-
-✅ Debe ser `0` o muy bajo (pago consume al instante).
-
-### 6.5 — Tasa de publicación al topic
-
-```text
-rate(kafka_topic_partition_current_offset{topic="orden-eventos"}[1m])
-```
-
----
-
-## 📋 PRUEBA 7 — LOGS (Loki)
+## 📋 PRUEBA 6 — LOGS (Loki)
 
 📍 **Explore** → cambia datasource a **Loki** → rango **Last 15 minutes**
 
@@ -275,8 +237,8 @@ Probar uno por uno:
 ```text
 {service="auth"}     |= "login"
 {service="producto"} |= "PRODUCTO"
-{service="pedido"}   |= "OrdenCreada"
-{service="pago"}     |= "Evento OrdenCreada recibido"
+{service="pedido"}   |= "Pago PENDIENTE registrado"
+{service="pago"}     |= "Registro de pago"
 {service="gateway"}  |= "GATEWAY"
 ```
 
@@ -286,16 +248,16 @@ Probar uno por uno:
 {job=~".+"} |= "Started"
 ```
 
-### 7.7 — Logs de Kafka (producer y consumer)
+### 6.7 — Flujo pedido -> pago (Feign)
 
 ```text
-{service="pedido"} |= "Publicando evento"
+{service="pedido"} |= "Pago PENDIENTE registrado"
 {service="pago"}   |= "Registro de pago"
 ```
 
 ---
 
-## 🎨 PRUEBA 8 — IMPORTAR DASHBOARDS LISTOS
+## 🎨 PRUEBA 7 — IMPORTAR DASHBOARDS LISTOS
 
 📍 Menú izquierdo → **Dashboards** → botón **New** → **Import**
 
@@ -363,15 +325,7 @@ Pasos:
 | Título | "Latencia promedio (ms)" |
 | Query | `sum by (job) (rate(http_server_requests_seconds_sum[1m])) / sum by (job) (rate(http_server_requests_seconds_count[1m])) * 1000` |
 
-### Panel 6 — Lag Kafka
-
-| Campo | Valor |
-|---|---|
-| Tipo | **Stat** |
-| Título | "Kafka Lag (pago)" |
-| Query | `kafka_consumergroup_lag{consumergroup="pago-consumer"}` |
-
-### Panel 7 — Logs en vivo (datasource Loki)
+### Panel 6 — Logs en vivo (datasource Loki)
 
 | Campo | Valor |
 |---|---|
@@ -417,12 +371,6 @@ sum by (job) (rate(http_server_requests_seconds_count{status=~"5.."}[1m]))   →
 
 ```text
 max by (job) (jvm_memory_used_bytes{area="heap"} / jvm_memory_max_bytes{area="heap"}) * 100   →   IS ABOVE 80
-```
-
-### Alerta 5 — Kafka lag alto
-
-```text
-kafka_consumergroup_lag{consumergroup="pago-consumer"}   →   IS ABOVE 100
 ```
 
 ### Cómo probar alertas
@@ -487,16 +435,14 @@ OBSERVABILIDAD MÍNIMA:
 - [ ] **PRUEBA 7.1**: logs de los 6 servicios visibles en Loki
 
 OBSERVABILIDAD AVANZADA (para nota extra):
-- [ ] **PRUEBA 6.1**: kafka_brokers = 1
-- [ ] **PRUEBA 6.4**: kafka_consumergroup_lag funciona
-- [ ] **PRUEBA 8**: Dashboard 4701 importado y funcionando
-- [ ] **PRUEBA 9**: Dashboard propio "MS2026 — Resumen" creado
-- [ ] **PRUEBA 10.1**: Alerta "Auth caido" creada y probada
+- [ ] **PRUEBA 7**: Dashboard 4701 importado y funcionando
+- [ ] **PRUEBA 8**: Dashboard propio "MS2026 — Resumen" creado
+- [ ] **PRUEBA 9**: Alerta "Auth caido" creada y probada
 
 DEMOSTRACIÓN EN VIVO:
 - [ ] Apagar catalogo → ver query 1.1 cambiar (catalogo-dev = 0)
 - [ ] Apagar catalogo → ver alerta cambiar a Firing
-- [ ] Crear pedido → ver log en Loki `{service="pago"} |= "Evento"`
+- [ ] Crear pedido → ver log en Loki `{service="pago"} |= "Registro de pago"`
 - [ ] Provocar 401 → ver errores 4xx subir en query 3.1
 
 ---
@@ -529,7 +475,6 @@ DEMOSTRACIÓN EN VIVO:
 | Query no devuelve datos | Genera tráfico primero, espera 30s, baja el rango a 5 min |
 | Dashboard 4701 vacío | Cambia el filtro de "Application" arriba a un servicio que SÍ exista |
 | Alerta no se dispara | Verifica que la condición sea correcta y espera el tiempo `for` |
-| `kafka_brokers` no aparece | El kafka-exporter no está siendo scrapeado — revisa prometheus-dev.yml |
 
 ---
 
@@ -555,15 +500,10 @@ avg by (job) (system_cpu_usage) * 100
 sum by (job) (jvm_memory_used_bytes{area="heap"}) / 1024 / 1024
 avg by (job) (jvm_threads_live_threads)
 
-# KAFKA
-kafka_brokers
-kafka_consumergroup_lag{consumergroup="pago-consumer"}
-kafka_topic_partition_current_offset{topic="orden-eventos"}
-
 # LOKI
 {service="auth"} |= "login"
 {job=~".+"} |= "ERROR"
-{service="pago"} |= "Evento OrdenCreada"
+{service="pago"} |= "Registro de pago"
 ```
 
 ---

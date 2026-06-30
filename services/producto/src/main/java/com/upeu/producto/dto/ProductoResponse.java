@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @Builder
@@ -13,9 +15,15 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ProductoResponse {
 
-    private Integer id;
+    private Long id;
     private String nombre;
     private String descripcion;
-    private Integer idCategoria;
+    private Long idCategoria;
+    private BigDecimal precio;
+    private Integer stock;
+    private Boolean activo;
+    private String sku;
+    private String imagenUrl;
+    private Boolean enOferta;
     private CategoriaDto categoria;
 }

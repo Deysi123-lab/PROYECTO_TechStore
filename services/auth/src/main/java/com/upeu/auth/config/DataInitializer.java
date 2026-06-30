@@ -32,6 +32,8 @@ public class DataInitializer {
             if (!authUserRepository.existsByUsername("admin")) {
                 authUserRepository.save(AuthUser.builder()
                         .username("admin")
+                        .nombreCompleto("Administrador TechStore")
+                        .email("admin@techstore.com")
                         .password(passwordEncoder.encode("admin123"))
                         .enabled(true)
                         .roles(Set.of(adminRole))
@@ -41,6 +43,8 @@ public class DataInitializer {
             if (!authUserRepository.existsByUsername("user")) {
                 authUserRepository.save(AuthUser.builder()
                         .username("user")
+                        .nombreCompleto("Cliente Demo")
+                        .email("cliente@techstore.com")
                         .password(passwordEncoder.encode("user123"))
                         .enabled(true)
                         .roles(Set.of(userRole))

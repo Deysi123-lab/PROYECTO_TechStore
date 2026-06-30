@@ -22,9 +22,10 @@ class PagoMapperTest {
 				.estado("OK")
 				.build();
 
-		Pago entity = mapper.toEntity(request);
+		Pago entity = mapper.toEntity(request, 1L);
 
 		assertThat(entity.getIdPedido()).isEqualTo(5L);
+		assertThat(entity.getUserId()).isEqualTo(1L);
 		assertThat(entity.getMonto()).isEqualByComparingTo("12.34");
 	}
 
@@ -33,6 +34,7 @@ class PagoMapperTest {
 		Pago entity = Pago.builder()
 				.id(1L)
 				.idPedido(5L)
+				.userId(1L)
 				.monto(BigDecimal.ONE)
 				.metodo("X")
 				.estado("Y")

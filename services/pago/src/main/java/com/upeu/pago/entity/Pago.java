@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "pagos")
@@ -27,8 +28,11 @@ public class Pago {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "id_pedido", nullable = false)
+	@Column(name = "id_pedido", nullable = false, unique = true)
 	private Long idPedido;
+
+	@Column(name = "user_id", nullable = false)
+	private Long userId;
 
 	@Column(name = "monto", nullable = false, precision = 12, scale = 2)
 	private BigDecimal monto;
@@ -38,4 +42,10 @@ public class Pago {
 
 	@Column(name = "estado", nullable = false, length = 50)
 	private String estado;
+
+	@Column(name = "referencia_transaccion", length = 100)
+	private String referenciaTransaccion;
+
+	@Column(name = "fecha_pago")
+	private LocalDateTime fechaPago;
 }

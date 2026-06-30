@@ -25,3 +25,8 @@ eureka:
     enabled: false
     register-with-eureka: false
     fetch-registry: false
+
+jwt:
+  secret: MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWYwMTIzNDU2Nzg5YWJjZGVmMDEyMzQ1Njc4OWFiY2RlZg==
+  expiration: 3600000
+  issuer: auth

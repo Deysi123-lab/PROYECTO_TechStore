@@ -31,7 +31,6 @@ Aquí ves a quién está scrapeando Prometheus. Deben aparecer **TODOS en estado
 | `producto-dev` | `host.docker.internal:9091/actuator/prometheus` | UP |
 | `pedido-dev` | `host.docker.internal:9101/actuator/prometheus` | UP |
 | `pago-dev` | `host.docker.internal:9111/actuator/prometheus` | UP |
-| `kafka-exporter-dev` | `host.docker.internal:41308/metrics` | UP |
 | `prometheus` | `localhost:9090/metrics` | UP |
 
 ⚠️ Si alguno aparece en **DOWN (rojo)** → ese servicio NO está corriendo o no expone `/actuator/prometheus`.
@@ -54,7 +53,6 @@ Click **Ejecutar** → vista **Mesa**.
 
 ```text
 up{job="auth-dev"}                  → ¿Auth vivo?
-up{job="kafka-exporter-dev"}        → ¿Kafka exporter vivo?
 up == 0                             → solo los que están CAÍDOS
 count(up == 1)                      → cuántos servicios están UP
 sum(up)                             → total UP
@@ -292,77 +290,7 @@ hikaricp_connections_usage_seconds_max
 
 ---
 
-## 📨 PRUEBA 7 — KAFKA (con kafka-exporter)
-
-### 7.1 — Brokers visibles
-
-```text
-kafka_brokers
-```
-
-✅ Debe devolver `1`.
-
-### 7.2 — Información del broker
-
-```text
-kafka_broker_info
-```
-
-### 7.3 — Offset actual del topic
-
-```text
-kafka_topic_partition_current_offset{topic="orden-eventos"}
-```
-
-> Cada vez que `pedido` publica un evento, este número sube.
-
-### 7.4 — Offset inicial
-
-```text
-kafka_topic_partition_oldest_offset{topic="orden-eventos"}
-```
-
-### 7.5 — Particiones del topic
-
-```text
-kafka_topic_partitions{topic="orden-eventos"}
-```
-
-### 7.6 — Lag del consumer (pago)
-
-```text
-kafka_consumergroup_lag{consumergroup="pago-consumer"}
-```
-
-✅ Debe estar en `0` → significa que `pago` consume al instante.
-
-### 7.7 — Offset del consumer
-
-```text
-kafka_consumergroup_current_offset{consumergroup="pago-consumer"}
-```
-
-### 7.8 — Tasa de mensajes nuevos por segundo
-
-```text
-rate(kafka_topic_partition_current_offset{topic="orden-eventos"}[1m])
-```
-
-### 7.9 — Verificación en vivo
-
-Crea un pedido desde PowerShell:
-```powershell
-$token = (Invoke-RestMethod -Uri "http://localhost:7091/auth/login" -Method POST -ContentType "application/json" -Body '{"username":"admin","password":"123456"}').token
-$headers = @{ Authorization = "Bearer $token" }
-$body = '{"clienteId":1,"productos":[{"productoId":1,"cantidad":2}]}'
-Invoke-RestMethod -Uri "http://localhost:7091/api/v1/pedidos" -Method POST -Headers $headers -ContentType "application/json" -Body $body
-```
-
-Ejecuta query **7.3** antes y después → debe **subir en 1**.
-
----
-
-## 🔍 PRUEBA 8 — MÉTRICAS PROPIAS DE SPRING
+## 🔍 PRUEBA 7 — MÉTRICAS PROPIAS DE SPRING
 
 ### 8.1 — Total de peticiones HTTP por servicio
 
@@ -476,18 +404,16 @@ Para CUALQUIER query:
 
 LO MÍNIMO:
 - [ ] **PRUEBA 0**: Targets → todos UP (verde)
-- [ ] **PRUEBA 1**: `up` → 7 servicios en 1
+- [ ] **PRUEBA 1**: `up` → 6 servicios en 1
 - [ ] **PRUEBA 2.3**: `sum by (job) (rate(http_server_requests_seconds_count[1m]))`
 - [ ] **PRUEBA 5.4**: memoria heap por servicio
-- [ ] **PRUEBA 7.1**: `kafka_brokers` = 1
 
 LO IDEAL (para tu nota):
 - [ ] **PRUEBA 3.3**: tasa de error %
 - [ ] **PRUEBA 4.3**: percentil 95 latencia
 - [ ] **PRUEBA 5.7**: threads vivos por servicio
 - [ ] **PRUEBA 6.1**: conexiones HikariCP
-- [ ] **PRUEBA 7.6**: lag de kafka consumer
-- [ ] **PRUEBA 7.9**: verificar que crear un pedido sube el offset
+- [ ] Crear pedido y verificar pago PENDIENTE en logs de pago
 
 ---
 
@@ -496,15 +422,12 @@ LO IDEAL (para tu nota):
 ```
 1. Abrir http://localhost:19090                            (10s)
 2. Estado → Targets → "Aquí veo que Prometheus está        (30s)
-   scrapeando los 7 servicios y todos están UP"
+   scrapeando los microservicios y todos están UP"
 3. Consulta → "up" → "Comprobamos que todos viven"         (20s)
 4. Lanzar tráfico en PowerShell (script de PRUEBA 2)        (30s)
 5. Consulta → "sum by (job) (rate(...))" → modo Gráfico    (40s)
    "Aquí veo el tráfico en vivo"
-6. Consulta → "kafka_brokers" → "Mi cluster Kafka vive"    (20s)
-7. Crear un pedido → "kafka_topic_partition_current        (30s)
-   _offset{topic='orden-eventos'}" subió → "Aquí se ve
-   que mi evento se publicó realmente en Kafka"
+6. Crear un pedido → verificar pago PENDIENTE en pago      (30s)
 ```
 
 ---
@@ -516,8 +439,6 @@ LO IDEAL (para tu nota):
 | Targets en DOWN | Ese servicio no está corriendo. Levántalo con `mvn spring-boot:run` |
 | `up` no muestra el servicio | El servicio no está en `prometheus-dev.yml`. Revisa el archivo |
 | `http_server_requests_seconds_count` vacío | El servicio no ha recibido peticiones. Genera tráfico |
-| `kafka_brokers` no aparece | kafka-exporter no está corriendo (`docker ps`) |
-| `kafka_consumergroup_lag` vacío | El consumer `pago-consumer` no se ha registrado. Crea un pedido primero |
 | Query da error de sintaxis | Revisa paréntesis y comillas dobles `"` (no simples) |
 
 ---
@@ -545,15 +466,6 @@ sum by (job) (jvm_memory_used_bytes{area="heap"}) / 1024 / 1024
 
 # 7. Threads
 jvm_threads_live_threads
-
-# 8. Kafka vivo
-kafka_brokers
-
-# 9. Eventos en topic
-kafka_topic_partition_current_offset{topic="orden-eventos"}
-
-# 10. Kafka lag
-kafka_consumergroup_lag{consumergroup="pago-consumer"}
 ```
 
 ---

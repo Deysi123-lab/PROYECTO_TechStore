@@ -38,6 +38,51 @@ public class AuthUser {
     @Column(nullable = false, unique = true, length = 100)
     private String username;
 
+    @Column(name = "nombre_completo", length = 150)
+    private String nombreCompleto;
+
+    @Column(length = 150, unique = true)
+    private String email;
+
+    @Column(length = 80)
+    private String nombres;
+
+    @Column(length = 120)
+    private String apellidos;
+
+    @Column(length = 8)
+    private String dni;
+
+    @Column(name = "fecha_nacimiento")
+    private java.time.LocalDate fechaNacimiento;
+
+    @Column(length = 20)
+    private String sexo;
+
+    @Column(length = 20)
+    private String telefono;
+
+    @Column(length = 80)
+    private String pais;
+
+    @Column(length = 80)
+    private String departamento;
+
+    @Column(length = 80)
+    private String provincia;
+
+    @Column(length = 80)
+    private String distrito;
+
+    @Column(name = "codigo_postal", length = 12)
+    private String codigoPostal;
+
+    @Column(length = 255)
+    private String direccion;
+
+    @Column(length = 255)
+    private String referencia;
+
     @Column(nullable = false, length = 255)
     private String password;
 

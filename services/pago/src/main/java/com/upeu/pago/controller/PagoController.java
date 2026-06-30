@@ -40,6 +40,11 @@ public class PagoController {
 		return ResponseEntity.ok(pagoService.findById(id));
 	}
 
+	@GetMapping("/pedido/{idPedido}")
+	public ResponseEntity<PagoResponse> findByPedidoId(@PathVariable Long idPedido) {
+		return ResponseEntity.ok(pagoService.findByPedidoId(idPedido));
+	}
+
 	@PutMapping("/{id}")
 	public ResponseEntity<PagoResponse> update(@PathVariable Long id,
 			@Valid @RequestBody PagoRequest request) {

@@ -13,6 +13,8 @@ public interface PagoService {
 
 	PagoResponse findById(Long id);
 
+	PagoResponse findByPedidoId(Long idPedido);
+
 	PagoResponse update(Long id, PagoRequest request);
 
 	void delete(Long id);

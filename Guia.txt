@@ -9,37 +9,30 @@ ORDEN DE ARRANQUE (PROD / docker compose)
    copy .env.example .env       # (solo la primera vez)
    docker compose up -d --build
 
-2) KAFKA (broker + UI + exporter)
-   cd ..\kafka
-   docker compose up -d --build
-   # Kafka UI:        http://localhost:28085
-   # Kafka exporter:  http://localhost:29308
-   # Bootstrap host:  localhost:29092
-
-3) OBSERVABILIDAD (prometheus, loki, promtail, grafana)
+2) OBSERVABILIDAD (prometheus, loki, promtail, grafana)
    cd ..\observability
    docker compose up -d --build
    # Prometheus:  http://localhost:19090
    # Grafana:     http://localhost:13000  (admin/admin)
    # Loki:        http://localhost:23100
 
-4) AUTH SERVICE
+3) AUTH SERVICE
    cd ..\services\auth
    docker compose up -d --build
 
-5) CATALOGO SERVICE
+4) CATALOGO SERVICE
    cd ..\catalogo
    docker compose up -d --build
 
-6) PRODUCTO SERVICE
+5) PRODUCTO SERVICE
    cd ..\producto
    docker compose up -d --build
 
-7) PEDIDO SERVICE
+6) PEDIDO SERVICE
    cd ..\pedido
    docker compose up -d --build
 
-8) PAGO SERVICE
+7) PAGO SERVICE
    cd ..\pago
    docker compose up -d --build
 
@@ -48,8 +41,7 @@ ORDEN DE ARRANQUE (DEV / desde IDE)
 ============================================================
 
 Levanta SOLO las dependencias en Docker (-dev):
-   cd kafka            && docker compose -f docker-compose-dev.yml up -d
-   cd ..\observability && docker compose -f docker-compose-dev.yml up -d
+   cd observability     && docker compose -f docker-compose-dev.yml up -d
    cd ..\services\auth     && docker compose -f docker-compose-dev.yml up -d
    cd ..\catalogo          && docker compose -f docker-compose-dev.yml up -d
    cd ..\producto          && docker compose -f docker-compose-dev.yml up -d
@@ -85,8 +77,8 @@ GATEWAY (entrada única):
   http://localhost:7091/auth/login                (POST público)
   http://localhost:7091/auth/register             (POST público)
   http://localhost:7091/api/v1/categorias         (requiere JWT)
-  http://localhost:7091/api/v1/productos          (GET requiere JWT; POST/PUT/DELETE requieren ROLE_ADMIN)
-  http://localhost:7091/api/v1/pedidos            (requiere JWT — publica evento Kafka al crear)
+  http://localhost:7091/api/v1/productos          (GET público; POST/PUT/DELETE requieren ROLE_ADMIN)
+  http://localhost:7091/api/v1/pedidos            (requiere JWT — registra pago via Feign al crear)
   http://localhost:7091/api/v1/pagos              (requiere JWT)
 
 SWAGGER directo:
@@ -104,10 +96,6 @@ ACTUATOR (cada servicio):
 OBSERVABILIDAD:
   Prometheus:  http://localhost:19090           (targets: /targets)
   Grafana:     http://localhost:13000           (admin/admin)
-
-KAFKA:
-  Kafka UI:        http://localhost:41085 (dev) | 28085 (prod)
-  Bootstrap host:  localhost:41092       (dev) | 29092 (prod)
 
 ============================================================
 USUARIOS CARGADOS (DataInitializer)
@@ -135,8 +123,15 @@ Invoke-RestMethod -Method Get `
    -Uri "http://localhost:7091/api/v1/productos" `
    -Headers @{ Authorization = "Bearer $token" }
 
-# 4. POST/PUT/DELETE en productos: requiere ROLE_ADMIN
-$nuevo = @{ nombre = "Producto JWT"; descripcion = "demo"; idCategoria = 1 } | ConvertTo-Json
+# 4. POST productos: requiere ROLE_ADMIN
+$nuevo = @{
+  nombre = "Producto JWT"
+  descripcion = "demo"
+  idCategoria = 1
+  precio = 99.90
+  stock = 10
+  activo = $true
+} | ConvertTo-Json
 Invoke-RestMethod -Method Post `
    -Uri "http://localhost:7091/api/v1/productos" `
    -Headers @{ Authorization = "Bearer $token" } `
@@ -148,44 +143,30 @@ Invoke-RestMethod -Method Post `
    -Uri "http://localhost:7091/auth/register" `
    -ContentType "application/json" -Body $reg
 
-# 6. FLUJO KAFKA (ORDEN -> EVENTO -> KAFKA -> PAGO)
-# Crear pedido: pedido publica al topic 'orden-eventos', pago lo consume.
-$pedido = @{ cliente = "Juan"; estado = "NUEVO"; observacion = "demo kafka" } | ConvertTo-Json
+# 6. FLUJO PEDIDO -> PAGO (Feign)
+# Crear pedido: pedido llama a pago y registra un pago PENDIENTE.
+$pedido = @{
+  userId = 1
+  cliente = "admin"
+  estado = "PENDIENTE"
+  direccionEnvio = "Lima, Perú"
+  items = @(@{ productoId = 1; cantidad = 1 })
+} | ConvertTo-Json -Depth 5
 Invoke-RestMethod -Method Post `
    -Uri "http://localhost:7091/api/v1/pedidos" `
    -Headers @{ Authorization = "Bearer $token" } `
    -ContentType "application/json" -Body $pedido
 
-# Verificar consumo en logs de pago (debe aparecer "Evento OrdenCreada recibido")
-docker logs -f pago-prod-pago-1     # (en prod docker)
-# o si pago corre en IDE: mira la consola del proceso pago
+# Verificar pago creado
+Invoke-RestMethod -Method Get `
+   -Uri "http://localhost:7091/api/v1/pagos" `
+   -Headers @{ Authorization = "Bearer $token" }
 
 # 7. CIRCUIT BREAKER (producto -> catalogo con Feign)
-# Baja catalogo y consulta:
 Invoke-RestMethod -Method Get `
    -Uri "http://localhost:7091/api/v1/productos/detalle/1" `
    -Headers @{ Authorization = "Bearer $token" }
-# La respuesta debe traer categoria: null (fallback) en lugar de 500.
-
-============================================================
-COMANDOS KAFKA (dentro del contenedor)
-============================================================
-docker compose -f docker-compose-dev.yml exec kafka bash
-
-# Listar topics
-/opt/kafka/bin/kafka-topics.sh --list --bootstrap-server kafka:9092
-
-# Crear topic manualmente (también se autocrea por configuración)
-/opt/kafka/bin/kafka-topics.sh --create --topic orden-eventos \
-  --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1
-
-# Consumer
-/opt/kafka/bin/kafka-console-consumer.sh --topic orden-eventos \
-  --bootstrap-server kafka:9092 --from-beginning
-
-# Producer
-/opt/kafka/bin/kafka-console-producer.sh --topic orden-eventos \
-  --bootstrap-server kafka:9092
+# La respuesta debe traer categoria o null (fallback) si catalogo está caído.
 
 ============================================================
 QUERIES ÚTILES
@@ -201,5 +182,5 @@ Loki (Grafana http://localhost:13000):
   {service="auth"}
   {service="producto"} |= "[PRODUCTO]"
   {service="catalogo"} |= "[CATALOGO]"
-  {service="pedido"}  |= "[PEDIDO]"
-  {service="pago"}    |= "[PAGO]"
+  {service="pedido"}  |= "Pago PENDIENTE registrado"
+  {service="pago"}    |= "Registro de pago"

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -17,7 +18,10 @@ public class PagoResponse {
 
 	private Long id;
 	private Long idPedido;
+	private Long userId;
 	private BigDecimal monto;
 	private String metodo;
 	private String estado;
+	private String referenciaTransaccion;
+	private LocalDateTime fechaPago;
 }

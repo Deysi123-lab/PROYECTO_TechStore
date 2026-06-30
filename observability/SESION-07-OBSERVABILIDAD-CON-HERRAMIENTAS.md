@@ -731,5 +731,5 @@ Despues de esta sesion, el siguiente bloque natural es:
 - dashboards mas completos en Grafana
 - filtros por `traceId`
 - alertas reales en Grafana o Alertmanager
-- integracion posterior con Kafka y microservicios dirigidos por eventos
+- Comunicación pedido → pago mediante Feign (REST síncrono)
 - trazas distribuidas completas cuando el curso lo requiera
