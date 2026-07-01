@@ -1,0 +1,2036 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentación del e-commerce TechStore con microservicios Spring Cloud">
+      
+      
+      
+        <link rel="canonical" href="https://deysi123-lab.github.io/PROYECTO_TechStore/guias/prometheus/">
+      
+      
+        <link rel="prev" href="../kafka/">
+      
+      
+        <link rel="next" href="../grafana/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Prometheus - TechStore - Proyecto MS 2026</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#guia-de-prometheus-proyectoms2026" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../.." title="TechStore - Proyecto MS 2026" class="md-header__button md-logo" aria-label="TechStore - Proyecto MS 2026" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            TechStore - Proyecto MS 2026
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Prometheus
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Deysi123-lab/PROYECTO_TechStore" title="Ir al repositorio" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    PROYECTO_TechStore
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="TechStore - Proyecto MS 2026" class="md-nav__button md-logo" aria-label="TechStore - Proyecto MS 2026" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    TechStore - Proyecto MS 2026
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Deysi123-lab/PROYECTO_TechStore" title="Ir al repositorio" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    PROYECTO_TechStore
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inicio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guías del proyecto
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guías del proyecto
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../arranque/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arranque y endpoints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pruebas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pruebas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kafka/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kafka
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prometheus
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prometheus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#acceso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🌐 ACCESO
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prueba-0-targets-lo-primero-que-debes-mirar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ PRUEBA 0 — TARGETS (lo primero que debes mirar)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prueba-1-disponibilidad-la-query-mas-importante" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ PRUEBA 1 — DISPONIBILIDAD (la query más importante)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="✅ PRUEBA 1 — DISPONIBILIDAD (la query más importante)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#variantes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Variantes:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prueba-2-trafico-http" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 PRUEBA 2 — TRÁFICO HTTP
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📊 PRUEBA 2 — TRÁFICO HTTP">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-total-de-peticiones-acumulado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 — Total de peticiones (acumulado)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-peticiones-por-segundo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 — Peticiones por segundo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-agrupado-por-servicio-mas-legible" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 — Agrupado por servicio (más legible)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-agrupado-por-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 — Agrupado por endpoint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-top-5-endpoints-mas-usados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.5 — Top 5 endpoints más usados
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#26-solo-peticiones-exitosas-status-200" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.6 — Solo peticiones exitosas (status 200)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#27-por-metodo-http" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.7 — Por método HTTP
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prueba-3-errores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ⚠️ PRUEBA 3 — ERRORES
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="⚠️ PRUEBA 3 — ERRORES">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-errores-4xx-cliente-401-sin-token-404-no-existe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 — Errores 4xx (cliente: 401 sin token, 404 no existe)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-errores-5xx-servidor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 — Errores 5xx (servidor)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-tasa-de-error-calidad-del-servicio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 — Tasa de error % (calidad del servicio)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-provocar-401-para-verificar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 — Provocar 401 para verificar
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prueba-4-latencia-tiempo-de-respuesta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ⏱️ PRUEBA 4 — LATENCIA (tiempo de respuesta)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="⏱️ PRUEBA 4 — LATENCIA (tiempo de respuesta)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-tiempo-promedio-segundos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 — Tiempo promedio (segundos)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-tiempo-promedio-en-milisegundos-por-servicio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 — Tiempo promedio en milisegundos por servicio
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-percentil-95-el-95-de-peticiones-tarda-menos-que-esto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 — Percentil 95 (el 95% de peticiones tarda menos que esto)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-percentil-99-los-mas-lentos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 — Percentil 99 (los más lentos)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-tiempo-maximo-registrado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5 — Tiempo MÁXIMO registrado
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prueba-5-jvm-memoria-cpu-hilos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        💻 PRUEBA 5 — JVM (memoria, CPU, hilos)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="💻 PRUEBA 5 — JVM (memoria, CPU, hilos)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-cpu-del-sistema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 — % CPU del sistema
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-cpu-del-proceso-java" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 — % CPU del proceso Java
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-nucleos-disponibles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 — Núcleos disponibles
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-memoria-heap-usada-mb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 — Memoria HEAP usada (MB)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55-memoria-heap-maxima-mb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.5 — Memoria HEAP máxima (MB)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#56-heap-usado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.6 — % HEAP usado
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#57-threads-vivos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.7 — Threads vivos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#58-threads-en-cada-estado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.8 — Threads en cada estado
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#59-garbage-collector-pausas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.9 — Garbage Collector (pausas)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#510-clases-cargadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.10 — Clases cargadas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#511-uptime-de-cada-servicio-segundos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.11 — Uptime de cada servicio (segundos)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#512-uptime-en-horas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.12 — Uptime en horas
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prueba-6-base-de-datos-hikaricp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🗄️ PRUEBA 6 — BASE DE DATOS (HikariCP)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🗄️ PRUEBA 6 — BASE DE DATOS (HikariCP)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-conexiones-activas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 — Conexiones activas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-conexiones-disponibles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 — Conexiones disponibles
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-total-de-conexiones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 — Total de conexiones
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#64-tiempo-de-uso-de-conexion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 — Tiempo de uso de conexión
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prueba-7-metricas-propias-de-spring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔍 PRUEBA 7 — MÉTRICAS PROPIAS DE SPRING
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔍 PRUEBA 7 — MÉTRICAS PROPIAS DE SPRING">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-total-de-peticiones-http-por-servicio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 — Total de peticiones HTTP por servicio
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-tasa-de-logs-por-nivel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 — Tasa de logs por nivel
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-logs-de-error" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 — Logs de ERROR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#84-logs-de-warn" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4 — Logs de WARN
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prueba-9-filtros-avanzados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🎯 PRUEBA 9 — FILTROS AVANZADOS
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎯 PRUEBA 9 — FILTROS AVANZADOS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-solo-un-servicio-especifico" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 — Solo un servicio específico
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-varios-servicios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 — Varios servicios
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93-excluir-un-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.3 — Excluir un endpoint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#94-solo-endpoints-de-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.4 — Solo endpoints de API
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#95-solo-errores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.5 — Solo errores
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prueba-10-alertas-en-prometheus-no-grafana" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🚨 PRUEBA 10 — ALERTAS (en Prometheus, no Grafana)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prueba-11-configuracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📋 PRUEBA 11 — CONFIGURACIÓN
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prueba-12-vista-grafica-built-in" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 PRUEBA 12 — VISTA GRÁFICA (built-in)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#checklist-de-pruebas-en-prometheus" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ CHECKLIST DE PRUEBAS EN PROMETHEUS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#secuencia-demo-para-sustentar-3-minutos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🎯 SECUENCIA DEMO PARA SUSTENTAR (3 minutos)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🆘 TROUBLESHOOTING
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cheat-sheet-top-10-queries-mas-utiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📚 CHEAT SHEET — TOP 10 QUERIES MÁS ÚTILES
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cuando-usar-prometheus-y-cuando-grafana" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔗 ¿CUÁNDO USAR PROMETHEUS Y CUÁNDO GRAFANA?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FIN
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grafana/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grafana
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitectura
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Arquitectura
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/general/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visión general
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/infra/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Infraestructura
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/servicios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Microservicios
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/frontend/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Frontend
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validación y consolidación
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Validación y consolidación
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sesiones/s13-validacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    S13 - Validación end-to-end
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sesiones/s14-revision/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    S14 - Revisión técnica
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sesiones/s15-defensa-tecnica/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    S15 - Defensa técnica
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sesiones/s16-evaluacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    S16 - Evaluación final
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="guia-de-prometheus-proyectoms2026">GUIA DE PROMETHEUS — ProyectoMS2026<a class="headerlink" href="#guia-de-prometheus-proyectoms2026" title="Permanent link">&para;</a></h1>
+<p>Todas las pruebas que puedes hacer directamente en la UI de Prometheus (sin Grafana).</p>
+<hr />
+<h2 id="acceso">🌐 ACCESO<a class="headerlink" href="#acceso" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>URL:  http://localhost:19090
+</code></pre></div>
+<p>En la barra superior tienes:
+- <strong>Consulta</strong> → escribir queries PromQL
+- <strong>Alertas</strong> → alertas configuradas en Prometheus
+- <strong>Estado</strong> → ver targets, configuración, banderas</p>
+<hr />
+<h2 id="prueba-0-targets-lo-primero-que-debes-mirar">✅ PRUEBA 0 — TARGETS (lo primero que debes mirar)<a class="headerlink" href="#prueba-0-targets-lo-primero-que-debes-mirar" title="Permanent link">&para;</a></h2>
+<p>📍 <strong>Estado</strong> → <strong>Targets</strong></p>
+<p>Aquí ves a quién está scrapeando Prometheus. Deben aparecer <strong>TODOS en estado <code>UP</code> (verde)</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Job (trabajo)</th>
+<th>Endpoint</th>
+<th>Estado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>auth-dev</code></td>
+<td><code>host.docker.internal:8041/actuator/prometheus</code></td>
+<td>UP</td>
+</tr>
+<tr>
+<td><code>gateway-dev</code></td>
+<td><code>host.docker.internal:7091/actuator/prometheus</code></td>
+<td>UP</td>
+</tr>
+<tr>
+<td><code>catalogo-dev</code></td>
+<td><code>host.docker.internal:8081/actuator/prometheus</code></td>
+<td>UP</td>
+</tr>
+<tr>
+<td><code>producto-dev</code></td>
+<td><code>host.docker.internal:9091/actuator/prometheus</code></td>
+<td>UP</td>
+</tr>
+<tr>
+<td><code>pedido-dev</code></td>
+<td><code>host.docker.internal:9101/actuator/prometheus</code></td>
+<td>UP</td>
+</tr>
+<tr>
+<td><code>pago-dev</code></td>
+<td><code>host.docker.internal:9111/actuator/prometheus</code></td>
+<td>UP</td>
+</tr>
+<tr>
+<td><code>prometheus</code></td>
+<td><code>localhost:9090/metrics</code></td>
+<td>UP</td>
+</tr>
+</tbody>
+</table>
+<p>⚠️ Si alguno aparece en <strong>DOWN (rojo)</strong> → ese servicio NO está corriendo o no expone <code>/actuator/prometheus</code>.</p>
+<hr />
+<h2 id="prueba-1-disponibilidad-la-query-mas-importante">✅ PRUEBA 1 — DISPONIBILIDAD (la query más importante)<a class="headerlink" href="#prueba-1-disponibilidad-la-query-mas-importante" title="Permanent link">&para;</a></h2>
+<p>📍 <strong>Consulta</strong> → escribe:</p>
+<div class="highlight"><pre><span></span><code>up
+</code></pre></div>
+<p>Click <strong>Ejecutar</strong> → vista <strong>Mesa</strong>.</p>
+<p>✅ <strong>Esperado</strong>: tabla con todos los jobs en valor <code>1</code>.</p>
+<h3 id="variantes">Variantes:<a class="headerlink" href="#variantes" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>up{job=&quot;auth-dev&quot;}                  → ¿Auth vivo?
+up == 0                             → solo los que están CAÍDOS
+count(up == 1)                      → cuántos servicios están UP
+sum(up)                             → total UP
+</code></pre></div>
+<hr />
+<h2 id="prueba-2-trafico-http">📊 PRUEBA 2 — TRÁFICO HTTP<a class="headerlink" href="#prueba-2-trafico-http" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p>💡 Antes de medir tráfico, genera peticiones en PowerShell:
+<div class="highlight"><pre><span></span><code><span class="n">1</span><span class="p">..</span><span class="n">50</span> <span class="p">|</span> <span class="k">ForEach</span><span class="n">-Object</span> <span class="p">{</span>
+    <span class="nb">Invoke-RestMethod</span> <span class="n">-Uri</span> <span class="s2">&quot;http://localhost:7091/api/v1/productos&quot;</span> <span class="p">|</span> <span class="nb">Out-Null</span>
+    <span class="nb">Invoke-RestMethod</span> <span class="n">-Uri</span> <span class="s2">&quot;http://localhost:7091/api/v1/categorias&quot;</span> <span class="p">|</span> <span class="nb">Out-Null</span>
+    <span class="nb">Start-Sleep</span> <span class="n">-Milliseconds</span> <span class="n">100</span>
+<span class="p">}</span>
+</code></pre></div></p>
+</blockquote>
+<h3 id="21-total-de-peticiones-acumulado">2.1 — Total de peticiones (acumulado)<a class="headerlink" href="#21-total-de-peticiones-acumulado" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>http_server_requests_seconds_count
+</code></pre></div>
+<p>✅ Cambia a vista <strong>Gráfico</strong> para ver cómo sube en el tiempo.</p>
+<h3 id="22-peticiones-por-segundo">2.2 — Peticiones por segundo<a class="headerlink" href="#22-peticiones-por-segundo" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>rate(http_server_requests_seconds_count[1m])
+</code></pre></div>
+<blockquote>
+<p>⚠️ En tu captura ya ejecutaste esto. La columna <strong>resultado</strong> muestra: ÉXITO, CLIENT_ERROR, SERVER_ERROR. Los <code>0,0666...</code> significa "ese endpoint recibió 4 peticiones en 1 minuto" (4/60 = 0.066).</p>
+</blockquote>
+<h3 id="23-agrupado-por-servicio-mas-legible">2.3 — Agrupado por servicio (más legible)<a class="headerlink" href="#23-agrupado-por-servicio-mas-legible" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sum by (job) (rate(http_server_requests_seconds_count[1m]))
+</code></pre></div>
+<h3 id="24-agrupado-por-endpoint">2.4 — Agrupado por endpoint<a class="headerlink" href="#24-agrupado-por-endpoint" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sum by (uri) (rate(http_server_requests_seconds_count[1m]))
+</code></pre></div>
+<h3 id="25-top-5-endpoints-mas-usados">2.5 — Top 5 endpoints más usados<a class="headerlink" href="#25-top-5-endpoints-mas-usados" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>topk(5, sum by (uri, job) (rate(http_server_requests_seconds_count[5m])))
+</code></pre></div>
+<h3 id="26-solo-peticiones-exitosas-status-200">2.6 — Solo peticiones exitosas (status 200)<a class="headerlink" href="#26-solo-peticiones-exitosas-status-200" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sum by (job) (rate(http_server_requests_seconds_count{status=&quot;200&quot;}[1m]))
+</code></pre></div>
+<h3 id="27-por-metodo-http">2.7 — Por método HTTP<a class="headerlink" href="#27-por-metodo-http" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sum by (method) (rate(http_server_requests_seconds_count[1m]))
+</code></pre></div>
+<hr />
+<h2 id="prueba-3-errores">⚠️ PRUEBA 3 — ERRORES<a class="headerlink" href="#prueba-3-errores" title="Permanent link">&para;</a></h2>
+<h3 id="31-errores-4xx-cliente-401-sin-token-404-no-existe">3.1 — Errores 4xx (cliente: 401 sin token, 404 no existe)<a class="headerlink" href="#31-errores-4xx-cliente-401-sin-token-404-no-existe" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sum by (job, status) (rate(http_server_requests_seconds_count{status=~&quot;4..&quot;}[5m]))
+</code></pre></div>
+<h3 id="32-errores-5xx-servidor">3.2 — Errores 5xx (servidor)<a class="headerlink" href="#32-errores-5xx-servidor" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sum by (job, status) (rate(http_server_requests_seconds_count{status=~&quot;5..&quot;}[5m]))
+</code></pre></div>
+<h3 id="33-tasa-de-error-calidad-del-servicio">3.3 — Tasa de error % (calidad del servicio)<a class="headerlink" href="#33-tasa-de-error-calidad-del-servicio" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sum by (job) (rate(http_server_requests_seconds_count{status=~&quot;5..&quot;}[5m])) / sum by (job) (rate(http_server_requests_seconds_count[5m])) * 100
+</code></pre></div>
+<h3 id="34-provocar-401-para-verificar">3.4 — Provocar 401 para verificar<a class="headerlink" href="#34-provocar-401-para-verificar" title="Permanent link">&para;</a></h3>
+<p>En PowerShell:
+<div class="highlight"><pre><span></span><code><span class="n">1</span><span class="p">..</span><span class="n">20</span> <span class="p">|</span> <span class="k">ForEach</span><span class="n">-Object</span> <span class="p">{</span>
+    <span class="k">try</span> <span class="p">{</span> <span class="nb">Invoke-WebRequest</span> <span class="n">-Uri</span> <span class="s2">&quot;http://localhost:7091/api/v1/productos&quot;</span> <span class="n">-Method</span> <span class="n">POST</span> <span class="p">}</span> <span class="k">catch</span> <span class="p">{}</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p>Vuelve a ejecutar query 3.1 → verás aumentar los <code>401</code>.</p>
+<hr />
+<h2 id="prueba-4-latencia-tiempo-de-respuesta">⏱️ PRUEBA 4 — LATENCIA (tiempo de respuesta)<a class="headerlink" href="#prueba-4-latencia-tiempo-de-respuesta" title="Permanent link">&para;</a></h2>
+<h3 id="41-tiempo-promedio-segundos">4.1 — Tiempo promedio (segundos)<a class="headerlink" href="#41-tiempo-promedio-segundos" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>rate(http_server_requests_seconds_sum[1m]) / rate(http_server_requests_seconds_count[1m])
+</code></pre></div>
+<h3 id="42-tiempo-promedio-en-milisegundos-por-servicio">4.2 — Tiempo promedio en milisegundos por servicio<a class="headerlink" href="#42-tiempo-promedio-en-milisegundos-por-servicio" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sum by (job) (rate(http_server_requests_seconds_sum[1m])) / sum by (job) (rate(http_server_requests_seconds_count[1m])) * 1000
+</code></pre></div>
+<h3 id="43-percentil-95-el-95-de-peticiones-tarda-menos-que-esto">4.3 — Percentil 95 (el 95% de peticiones tarda menos que esto)<a class="headerlink" href="#43-percentil-95-el-95-de-peticiones-tarda-menos-que-esto" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>histogram_quantile(0.95, sum by (le, job) (rate(http_server_requests_seconds_bucket[5m]))) * 1000
+</code></pre></div>
+<h3 id="44-percentil-99-los-mas-lentos">4.4 — Percentil 99 (los más lentos)<a class="headerlink" href="#44-percentil-99-los-mas-lentos" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>histogram_quantile(0.99, sum by (le, job) (rate(http_server_requests_seconds_bucket[5m]))) * 1000
+</code></pre></div>
+<h3 id="45-tiempo-maximo-registrado">4.5 — Tiempo MÁXIMO registrado<a class="headerlink" href="#45-tiempo-maximo-registrado" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>http_server_requests_seconds_max
+</code></pre></div>
+<hr />
+<h2 id="prueba-5-jvm-memoria-cpu-hilos">💻 PRUEBA 5 — JVM (memoria, CPU, hilos)<a class="headerlink" href="#prueba-5-jvm-memoria-cpu-hilos" title="Permanent link">&para;</a></h2>
+<h3 id="51-cpu-del-sistema">5.1 — % CPU del sistema<a class="headerlink" href="#51-cpu-del-sistema" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>system_cpu_usage * 100
+</code></pre></div>
+<h3 id="52-cpu-del-proceso-java">5.2 — % CPU del proceso Java<a class="headerlink" href="#52-cpu-del-proceso-java" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>process_cpu_usage * 100
+</code></pre></div>
+<h3 id="53-nucleos-disponibles">5.3 — Núcleos disponibles<a class="headerlink" href="#53-nucleos-disponibles" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>system_cpu_count
+</code></pre></div>
+<h3 id="54-memoria-heap-usada-mb">5.4 — Memoria HEAP usada (MB)<a class="headerlink" href="#54-memoria-heap-usada-mb" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sum by (job) (jvm_memory_used_bytes{area=&quot;heap&quot;}) / 1024 / 1024
+</code></pre></div>
+<h3 id="55-memoria-heap-maxima-mb">5.5 — Memoria HEAP máxima (MB)<a class="headerlink" href="#55-memoria-heap-maxima-mb" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sum by (job) (jvm_memory_max_bytes{area=&quot;heap&quot;}) / 1024 / 1024
+</code></pre></div>
+<h3 id="56-heap-usado">5.6 — % HEAP usado<a class="headerlink" href="#56-heap-usado" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sum by (job) (jvm_memory_used_bytes{area=&quot;heap&quot;}) / sum by (job) (jvm_memory_max_bytes{area=&quot;heap&quot;}) * 100
+</code></pre></div>
+<h3 id="57-threads-vivos">5.7 — Threads vivos<a class="headerlink" href="#57-threads-vivos" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>jvm_threads_live_threads
+</code></pre></div>
+<h3 id="58-threads-en-cada-estado">5.8 — Threads en cada estado<a class="headerlink" href="#58-threads-en-cada-estado" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>jvm_threads_states_threads
+</code></pre></div>
+<h3 id="59-garbage-collector-pausas">5.9 — Garbage Collector (pausas)<a class="headerlink" href="#59-garbage-collector-pausas" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>rate(jvm_gc_pause_seconds_sum[1m])
+</code></pre></div>
+<h3 id="510-clases-cargadas">5.10 — Clases cargadas<a class="headerlink" href="#510-clases-cargadas" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>jvm_classes_loaded_classes
+</code></pre></div>
+<h3 id="511-uptime-de-cada-servicio-segundos">5.11 — Uptime de cada servicio (segundos)<a class="headerlink" href="#511-uptime-de-cada-servicio-segundos" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>process_uptime_seconds
+</code></pre></div>
+<h3 id="512-uptime-en-horas">5.12 — Uptime en horas<a class="headerlink" href="#512-uptime-en-horas" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>process_uptime_seconds / 3600
+</code></pre></div>
+<hr />
+<h2 id="prueba-6-base-de-datos-hikaricp">🗄️ PRUEBA 6 — BASE DE DATOS (HikariCP)<a class="headerlink" href="#prueba-6-base-de-datos-hikaricp" title="Permanent link">&para;</a></h2>
+<h3 id="61-conexiones-activas">6.1 — Conexiones activas<a class="headerlink" href="#61-conexiones-activas" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>hikaricp_connections_active
+</code></pre></div>
+<h3 id="62-conexiones-disponibles">6.2 — Conexiones disponibles<a class="headerlink" href="#62-conexiones-disponibles" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>hikaricp_connections_idle
+</code></pre></div>
+<h3 id="63-total-de-conexiones">6.3 — Total de conexiones<a class="headerlink" href="#63-total-de-conexiones" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>hikaricp_connections
+</code></pre></div>
+<h3 id="64-tiempo-de-uso-de-conexion">6.4 — Tiempo de uso de conexión<a class="headerlink" href="#64-tiempo-de-uso-de-conexion" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>hikaricp_connections_usage_seconds_max
+</code></pre></div>
+<hr />
+<h2 id="prueba-7-metricas-propias-de-spring">🔍 PRUEBA 7 — MÉTRICAS PROPIAS DE SPRING<a class="headerlink" href="#prueba-7-metricas-propias-de-spring" title="Permanent link">&para;</a></h2>
+<h3 id="81-total-de-peticiones-http-por-servicio">8.1 — Total de peticiones HTTP por servicio<a class="headerlink" href="#81-total-de-peticiones-http-por-servicio" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sum by (job) (http_server_requests_seconds_count)
+</code></pre></div>
+<h3 id="82-tasa-de-logs-por-nivel">8.2 — Tasa de logs por nivel<a class="headerlink" href="#82-tasa-de-logs-por-nivel" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>rate(logback_events_total[1m])
+</code></pre></div>
+<h3 id="83-logs-de-error">8.3 — Logs de ERROR<a class="headerlink" href="#83-logs-de-error" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>rate(logback_events_total{level=&quot;error&quot;}[1m])
+</code></pre></div>
+<h3 id="84-logs-de-warn">8.4 — Logs de WARN<a class="headerlink" href="#84-logs-de-warn" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>rate(logback_events_total{level=&quot;warn&quot;}[1m])
+</code></pre></div>
+<hr />
+<h2 id="prueba-9-filtros-avanzados">🎯 PRUEBA 9 — FILTROS AVANZADOS<a class="headerlink" href="#prueba-9-filtros-avanzados" title="Permanent link">&para;</a></h2>
+<h3 id="91-solo-un-servicio-especifico">9.1 — Solo un servicio específico<a class="headerlink" href="#91-solo-un-servicio-especifico" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>http_server_requests_seconds_count{job=&quot;producto-dev&quot;}
+</code></pre></div>
+<h3 id="92-varios-servicios">9.2 — Varios servicios<a class="headerlink" href="#92-varios-servicios" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>up{job=~&quot;producto-dev|pedido-dev|pago-dev&quot;}
+</code></pre></div>
+<h3 id="93-excluir-un-endpoint">9.3 — Excluir un endpoint<a class="headerlink" href="#93-excluir-un-endpoint" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>http_server_requests_seconds_count{uri!=&quot;/actuator/prometheus&quot;}
+</code></pre></div>
+<h3 id="94-solo-endpoints-de-api">9.4 — Solo endpoints de API<a class="headerlink" href="#94-solo-endpoints-de-api" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>http_server_requests_seconds_count{uri=~&quot;/api/v1/.*&quot;}
+</code></pre></div>
+<h3 id="95-solo-errores">9.5 — Solo errores<a class="headerlink" href="#95-solo-errores" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>http_server_requests_seconds_count{status!=&quot;200&quot;}
+</code></pre></div>
+<hr />
+<h2 id="prueba-10-alertas-en-prometheus-no-grafana">🚨 PRUEBA 10 — ALERTAS (en Prometheus, no Grafana)<a class="headerlink" href="#prueba-10-alertas-en-prometheus-no-grafana" title="Permanent link">&para;</a></h2>
+<p>📍 <strong>Alertas</strong> (botón superior)</p>
+<p>Aquí ves las reglas de alerta configuradas en <code>observability/prometheus/</code>.</p>
+<p>Para verificar qué alertas hay:</p>
+<p>📍 <strong>Estado</strong> → <strong>Reglas</strong></p>
+<p>Verás reglas como (si están configuradas):
+- <code>ServiceDown</code> — algún servicio bajó
+- <code>HighErrorRate</code> — muchos 5xx
+- <code>HighMemoryUsage</code> — heap &gt;80%</p>
+<blockquote>
+<p>⚠️ Si no tienes reglas de alerta cargadas en Prometheus, las haces en <strong>Grafana</strong> (más fácil, ver <code>GRAFANA_GUIA.md</code> Prueba 10).</p>
+</blockquote>
+<hr />
+<h2 id="prueba-11-configuracion">📋 PRUEBA 11 — CONFIGURACIÓN<a class="headerlink" href="#prueba-11-configuracion" title="Permanent link">&para;</a></h2>
+<p>📍 <strong>Estado</strong> → <strong>Configuración</strong></p>
+<p>Aquí ves el <code>prometheus.yml</code> completo cargado. Útil para verificar:
+- Cada cuánto scrapea (<code>scrape_interval: 5s</code>)
+- Qué jobs tiene configurados
+- Qué etiquetas externas</p>
+<p>📍 <strong>Estado</strong> → <strong>Banderas en línea de comandos</strong></p>
+<p>Aquí ves con qué parámetros arrancó Prometheus.</p>
+<hr />
+<h2 id="prueba-12-vista-grafica-built-in">📊 PRUEBA 12 — VISTA GRÁFICA (built-in)<a class="headerlink" href="#prueba-12-vista-grafica-built-in" title="Permanent link">&para;</a></h2>
+<p>Para CUALQUIER query:</p>
+<ol>
+<li>Escribe la query (ej. <code>up</code>)</li>
+<li>Click <strong>Ejecutar</strong></li>
+<li>Click pestaña <strong>Gráfico</strong> (al lado de Mesa)</li>
+<li>Ajusta rango: <code>15m</code>, <code>1h</code>, <code>6h</code>, <code>1d</code></li>
+<li>Verás la gráfica en el tiempo</li>
+</ol>
+<p>✅ Esto es Prometheus puro, sin Grafana. Es feo pero funciona.</p>
+<hr />
+<h2 id="checklist-de-pruebas-en-prometheus">✅ CHECKLIST DE PRUEBAS EN PROMETHEUS<a class="headerlink" href="#checklist-de-pruebas-en-prometheus" title="Permanent link">&para;</a></h2>
+<p>LO MÍNIMO:
+- [ ] <strong>PRUEBA 0</strong>: Targets → todos UP (verde)
+- [ ] <strong>PRUEBA 1</strong>: <code>up</code> → 6 servicios en 1
+- [ ] <strong>PRUEBA 2.3</strong>: <code>sum by (job) (rate(http_server_requests_seconds_count[1m]))</code>
+- [ ] <strong>PRUEBA 5.4</strong>: memoria heap por servicio</p>
+<p>LO IDEAL (para tu nota):
+- [ ] <strong>PRUEBA 3.3</strong>: tasa de error %
+- [ ] <strong>PRUEBA 4.3</strong>: percentil 95 latencia
+- [ ] <strong>PRUEBA 5.7</strong>: threads vivos por servicio
+- [ ] <strong>PRUEBA 6.1</strong>: conexiones HikariCP
+- [ ] Crear pedido y verificar pago PENDIENTE en logs de pago</p>
+<hr />
+<h2 id="secuencia-demo-para-sustentar-3-minutos">🎯 SECUENCIA DEMO PARA SUSTENTAR (3 minutos)<a class="headerlink" href="#secuencia-demo-para-sustentar-3-minutos" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>1. Abrir http://localhost:19090                            (10s)
+2. Estado → Targets → &quot;Aquí veo que Prometheus está        (30s)
+   scrapeando los microservicios y todos están UP&quot;
+3. Consulta → &quot;up&quot; → &quot;Comprobamos que todos viven&quot;         (20s)
+4. Lanzar tráfico en PowerShell (script de PRUEBA 2)        (30s)
+5. Consulta → &quot;sum by (job) (rate(...))&quot; → modo Gráfico    (40s)
+   &quot;Aquí veo el tráfico en vivo&quot;
+6. Crear un pedido → verificar pago PENDIENTE en pago      (30s)
+</code></pre></div>
+<hr />
+<h2 id="troubleshooting">🆘 TROUBLESHOOTING<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Problema</th>
+<th>Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Targets en DOWN</td>
+<td>Ese servicio no está corriendo. Levántalo con <code>mvn spring-boot:run</code></td>
+</tr>
+<tr>
+<td><code>up</code> no muestra el servicio</td>
+<td>El servicio no está en <code>prometheus-dev.yml</code>. Revisa el archivo</td>
+</tr>
+<tr>
+<td><code>http_server_requests_seconds_count</code> vacío</td>
+<td>El servicio no ha recibido peticiones. Genera tráfico</td>
+</tr>
+<tr>
+<td>Query da error de sintaxis</td>
+<td>Revisa paréntesis y comillas dobles <code>"</code> (no simples)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="cheat-sheet-top-10-queries-mas-utiles">📚 CHEAT SHEET — TOP 10 QUERIES MÁS ÚTILES<a class="headerlink" href="#cheat-sheet-top-10-queries-mas-utiles" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code># 1. ¿Quién vive?
+up
+
+# 2. Tráfico por servicio
+sum by (job) (rate(http_server_requests_seconds_count[1m]))
+
+# 3. Errores 5xx
+sum by (job) (rate(http_server_requests_seconds_count{status=~&quot;5..&quot;}[5m]))
+
+# 4. Latencia P95 (ms)
+histogram_quantile(0.95, sum by (le, job) (rate(http_server_requests_seconds_bucket[5m]))) * 1000
+
+# 5. % CPU
+system_cpu_usage * 100
+
+# 6. Memoria heap (MB)
+sum by (job) (jvm_memory_used_bytes{area=&quot;heap&quot;}) / 1024 / 1024
+
+# 7. Threads
+jvm_threads_live_threads
+</code></pre></div>
+<hr />
+<h2 id="cuando-usar-prometheus-y-cuando-grafana">🔗 ¿CUÁNDO USAR PROMETHEUS Y CUÁNDO GRAFANA?<a class="headerlink" href="#cuando-usar-prometheus-y-cuando-grafana" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Usa Prometheus cuando...</th>
+<th>Usa Grafana cuando...</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Quieres ver targets y debug</td>
+<td>Quieres dashboards bonitos</td>
+</tr>
+<tr>
+<td>Necesitas probar queries rápido</td>
+<td>Quieres mostrar al profe</td>
+</tr>
+<tr>
+<td>Ver alertas activas</td>
+<td>Crear paneles persistentes</td>
+</tr>
+<tr>
+<td>Comprobar configuración</td>
+<td>Ver logs (Loki)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>En tu sustentación, abre <strong>ambos</strong>: Prometheus para mostrar Targets, Grafana para mostrar dashboards.</p>
+</blockquote>
+<hr />
+<h2 id="fin">FIN<a class="headerlink" href="#fin" title="Permanent link">&para;</a></h2>
+<p>Cubre lo mínimo (Prueba 0, 1, 2.3, 5.4, 7.1) y tienes Prometheus aprobado. Para el resto usa Grafana (mejor visual).</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.sections", "toc.integrate", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@10/dist/mermaid.min.js"></script>
+      
+        <script src="../../javascripts/mermaid.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,2223 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentación del e-commerce TechStore con microservicios Spring Cloud">
+      
+      
+      
+        <link rel="canonical" href="https://deysi123-lab.github.io/PROYECTO_TechStore/guias/grafana/">
+      
+      
+        <link rel="prev" href="../prometheus/">
+      
+      
+        <link rel="next" href="../../arquitectura/general/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Grafana - TechStore - Proyecto MS 2026</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#guia-de-grafana-proyectoms2026" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../.." title="TechStore - Proyecto MS 2026" class="md-header__button md-logo" aria-label="TechStore - Proyecto MS 2026" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            TechStore - Proyecto MS 2026
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Grafana
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Deysi123-lab/PROYECTO_TechStore" title="Ir al repositorio" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    PROYECTO_TechStore
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="TechStore - Proyecto MS 2026" class="md-nav__button md-logo" aria-label="TechStore - Proyecto MS 2026" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    TechStore - Proyecto MS 2026
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Deysi123-lab/PROYECTO_TechStore" title="Ir al repositorio" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    PROYECTO_TechStore
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inicio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guías del proyecto
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guías del proyecto
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../arranque/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arranque y endpoints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pruebas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pruebas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kafka/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kafka
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../prometheus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prometheus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grafana
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grafana
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#acceso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🌐 ACCESO
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prueba-0-verificar-datasources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ PRUEBA 0 — VERIFICAR DATASOURCES
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prueba-1-metricas-basicas-prometheus" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 PRUEBA 1 — MÉTRICAS BÁSICAS (Prometheus)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📊 PRUEBA 1 — MÉTRICAS BÁSICAS (Prometheus)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-estan-vivos-los-servicios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 — ¿Están vivos los servicios?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-solo-los-servicios-dev" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 — Solo los servicios DEV
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-generar-trafico-antes-en-powershell" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 — Generar tráfico antes (en PowerShell)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prueba-2-trafico-http" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 PRUEBA 2 — TRÁFICO HTTP
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📊 PRUEBA 2 — TRÁFICO HTTP">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-peticiones-por-segundo-por-servicio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 — Peticiones por segundo por servicio
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-peticiones-por-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 — Peticiones por endpoint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-top-5-endpoints-mas-llamados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 — Top 5 endpoints más llamados
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-conteo-total-por-metodo-http" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 — Conteo total por método HTTP
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prueba-3-errores-http" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ⚠️ PRUEBA 3 — ERRORES HTTP
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="⚠️ PRUEBA 3 — ERRORES HTTP">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-errores-4xx-auth-fallos-sin-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 — Errores 4xx (auth fallos, sin token)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-errores-5xx-errores-del-servidor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 — Errores 5xx (errores del servidor)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-provocar-errores-401-para-verificar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 — Provocar errores 401 (para verificar)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prueba-4-latencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ⏱️ PRUEBA 4 — LATENCIA
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="⏱️ PRUEBA 4 — LATENCIA">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-latencia-promedio-ms-por-servicio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 — Latencia promedio (ms) por servicio
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-percentil-95-los-mas-lentos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 — Percentil 95 (los más lentos)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-latencia-por-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 — Latencia por endpoint
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prueba-5-recursos-jvm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        💻 PRUEBA 5 — RECURSOS JVM
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="💻 PRUEBA 5 — RECURSOS JVM">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-cpu-usado-por-cada-servicio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 — % CPU usado por cada servicio
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-cpu-del-proceso-java" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 — % CPU del proceso Java
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-memoria-heap-mb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 — Memoria HEAP (MB)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-de-heap-usado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 — % de heap usado
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55-threads-vivos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.5 — Threads vivos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#56-garbage-collector-pausas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.6 — Garbage Collector (pausas)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#57-uptime-de-cada-servicio-segundos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.7 — Uptime de cada servicio (segundos)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prueba-6-logs-loki" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📋 PRUEBA 6 — LOGS (Loki)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📋 PRUEBA 6 — LOGS (Loki)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-verificar-que-cada-servicio-tenga-logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 — Verificar que cada servicio tenga logs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-todos-los-logs-juntos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 — Todos los logs juntos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-solo-errores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 — Solo errores
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#74-solo-warnings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.4 — Solo warnings
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#75-filtros-especificos-del-proyecto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.5 — Filtros específicos del proyecto
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#76-cuando-arrancan-los-servicios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.6 — Cuando arrancan los servicios
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#67-flujo-pedido-pago-feign" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.7 — Flujo pedido -&gt; pago (Feign)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prueba-7-importar-dashboards-listos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🎨 PRUEBA 7 — IMPORTAR DASHBOARDS LISTOS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prueba-9-crear-dashboard-propio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🛠️ PRUEBA 9 — CREAR DASHBOARD PROPIO
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🛠️ PRUEBA 9 — CREAR DASHBOARD PROPIO">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#panel-1-servicios-vivos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Panel 1 — Servicios vivos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#panel-2-trafico-por-servicio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Panel 2 — Tráfico por servicio
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#panel-3-errores-5xx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Panel 3 — Errores 5xx
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#panel-4-memoria-heap-por-servicio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Panel 4 — Memoria heap por servicio
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#panel-5-latencia-promedio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Panel 5 — Latencia promedio
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#panel-6-logs-en-vivo-datasource-loki" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Panel 6 — Logs en vivo (datasource Loki)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prueba-10-alertas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🚨 PRUEBA 10 — ALERTAS
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🚨 PRUEBA 10 — ALERTAS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#alerta-1-auth-caido" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alerta 1 — Auth caído
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alerta-2-gateway-caido" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alerta 2 — Gateway caído
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alerta-3-errores-5xx-altos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alerta 3 — Errores 5xx altos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alerta-4-memoria-heap-alta-80" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alerta 4 — Memoria heap alta (&gt;80%)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#como-probar-alertas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cómo probar alertas
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prueba-11-variables-del-dashboard-avanzado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🎛️ PRUEBA 11 — VARIABLES DEL DASHBOARD (avanzado)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎛️ PRUEBA 11 — VARIABLES DEL DASHBOARD (avanzado)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#variable-servicio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Variable servicio
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prueba-12-exportar-importar-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📂 PRUEBA 12 — EXPORTAR / IMPORTAR DASHBOARD
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📂 PRUEBA 12 — EXPORTAR / IMPORTAR DASHBOARD">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exportar-compartir-con-tu-profe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exportar (compartir con tu profe)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#importar-de-un-json" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Importar de un JSON
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#checklist-de-sustentacion-para-mostrar-al-profe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ CHECKLIST DE SUSTENTACIÓN (para mostrar al profe)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#secuencia-recomendada-para-sustentacion-5-minutos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🎯 SECUENCIA RECOMENDADA PARA SUSTENTACIÓN (5 minutos)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🆘 TROUBLESHOOTING
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cheat-sheet-de-queries-lo-mas-usado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📚 CHEAT SHEET DE QUERIES (lo más usado)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FIN
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitectura
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Arquitectura
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/general/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visión general
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/infra/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Infraestructura
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/servicios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Microservicios
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/frontend/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Frontend
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validación y consolidación
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Validación y consolidación
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sesiones/s13-validacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    S13 - Validación end-to-end
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sesiones/s14-revision/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    S14 - Revisión técnica
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sesiones/s15-defensa-tecnica/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    S15 - Defensa técnica
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sesiones/s16-evaluacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    S16 - Evaluación final
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="guia-de-grafana-proyectoms2026">GUIA DE GRAFANA — ProyectoMS2026<a class="headerlink" href="#guia-de-grafana-proyectoms2026" title="Permanent link">&para;</a></h1>
+<p>Todas las pruebas paso a paso para Grafana (métricas Prometheus + logs Loki + alertas + dashboards).</p>
+<hr />
+<h2 id="acceso">🌐 ACCESO<a class="headerlink" href="#acceso" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>URL:      http://localhost:13000
+Usuario:  admin
+Password: admin
+</code></pre></div>
+<p>Cuando te pida cambiar password → <strong>Skip</strong>.</p>
+<hr />
+<h2 id="prueba-0-verificar-datasources">✅ PRUEBA 0 — VERIFICAR DATASOURCES<a class="headerlink" href="#prueba-0-verificar-datasources" title="Permanent link">&para;</a></h2>
+<p>📍 Menú izquierdo → <strong>Connections</strong> → <strong>Data sources</strong></p>
+<p>Deben aparecer 2:</p>
+<table>
+<thead>
+<tr>
+<th>Datasource</th>
+<th>URL</th>
+<th>Estado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Prometheus</strong> (default)</td>
+<td>http://prometheus:9090</td>
+<td>✅ Working</td>
+</tr>
+<tr>
+<td><strong>Loki</strong></td>
+<td>http://loki:3100</td>
+<td>✅ Working</td>
+</tr>
+</tbody>
+</table>
+<p>Click en cada uno → botón <strong>Save &amp; test</strong> → debe decir "Successfully queried".</p>
+<hr />
+<h2 id="prueba-1-metricas-basicas-prometheus">📊 PRUEBA 1 — MÉTRICAS BÁSICAS (Prometheus)<a class="headerlink" href="#prueba-1-metricas-basicas-prometheus" title="Permanent link">&para;</a></h2>
+<p>📍 Menú izquierdo → 🧭 <strong>Explore</strong> → datasource <strong>Prometheus</strong> → rango <strong>Last 15 minutes</strong></p>
+<h3 id="11-estan-vivos-los-servicios">1.1 — ¿Están vivos los servicios?<a class="headerlink" href="#11-estan-vivos-los-servicios" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>up
+</code></pre></div>
+<p>✅ <strong>Esperado</strong>: tabla con todos los <code>job</code> en valor <code>1</code> (UP).<br />
+Si alguno aparece en <code>0</code>, ese servicio NO está corriendo.</p>
+<h3 id="12-solo-los-servicios-dev">1.2 — Solo los servicios DEV<a class="headerlink" href="#12-solo-los-servicios-dev" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>up{job=~&quot;.*-dev&quot;}
+</code></pre></div>
+<p>✅ <strong>Esperado</strong>: 6 líneas: auth-dev, gateway-dev, catalogo-dev, producto-dev, pedido-dev, pago-dev.</p>
+<h3 id="13-generar-trafico-antes-en-powershell">1.3 — Generar tráfico antes (en PowerShell)<a class="headerlink" href="#13-generar-trafico-antes-en-powershell" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="n">1</span><span class="p">..</span><span class="n">30</span> <span class="p">|</span> <span class="k">ForEach</span><span class="n">-Object</span> <span class="p">{</span>
+    <span class="nb">Invoke-RestMethod</span> <span class="n">-Uri</span> <span class="s2">&quot;http://localhost:7091/api/v1/productos&quot;</span> <span class="p">|</span> <span class="nb">Out-Null</span>
+    <span class="nb">Invoke-RestMethod</span> <span class="n">-Uri</span> <span class="s2">&quot;http://localhost:7091/api/v1/categorias&quot;</span> <span class="p">|</span> <span class="nb">Out-Null</span>
+    <span class="nb">Invoke-RestMethod</span> <span class="n">-Uri</span> <span class="s2">&quot;http://localhost:7091/api/v1/pedidos&quot;</span>    <span class="p">|</span> <span class="nb">Out-Null</span>
+    <span class="nb">Invoke-RestMethod</span> <span class="n">-Uri</span> <span class="s2">&quot;http://localhost:7091/api/v1/pagos&quot;</span>      <span class="p">|</span> <span class="nb">Out-Null</span>
+    <span class="nb">Write-Host</span> <span class="s2">&quot;Vuelta $_&quot;</span>
+    <span class="nb">Start-Sleep</span> <span class="n">-Milliseconds</span> <span class="n">200</span>
+<span class="p">}</span>
+</code></pre></div>
+<hr />
+<h2 id="prueba-2-trafico-http">📊 PRUEBA 2 — TRÁFICO HTTP<a class="headerlink" href="#prueba-2-trafico-http" title="Permanent link">&para;</a></h2>
+<h3 id="21-peticiones-por-segundo-por-servicio">2.1 — Peticiones por segundo por servicio<a class="headerlink" href="#21-peticiones-por-segundo-por-servicio" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sum by (job) (rate(http_server_requests_seconds_count[1m]))
+</code></pre></div>
+<p>✅ Vista <strong>Graph</strong> → una línea por servicio.</p>
+<h3 id="22-peticiones-por-endpoint">2.2 — Peticiones por endpoint<a class="headerlink" href="#22-peticiones-por-endpoint" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sum by (uri) (rate(http_server_requests_seconds_count[1m]))
+</code></pre></div>
+<h3 id="23-top-5-endpoints-mas-llamados">2.3 — Top 5 endpoints más llamados<a class="headerlink" href="#23-top-5-endpoints-mas-llamados" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>topk(5, sum by (uri, job) (rate(http_server_requests_seconds_count[5m])))
+</code></pre></div>
+<h3 id="24-conteo-total-por-metodo-http">2.4 — Conteo total por método HTTP<a class="headerlink" href="#24-conteo-total-por-metodo-http" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sum by (method) (http_server_requests_seconds_count)
+</code></pre></div>
+<hr />
+<h2 id="prueba-3-errores-http">⚠️ PRUEBA 3 — ERRORES HTTP<a class="headerlink" href="#prueba-3-errores-http" title="Permanent link">&para;</a></h2>
+<h3 id="31-errores-4xx-auth-fallos-sin-token">3.1 — Errores 4xx (auth fallos, sin token)<a class="headerlink" href="#31-errores-4xx-auth-fallos-sin-token" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sum by (job, status) (rate(http_server_requests_seconds_count{status=~&quot;4..&quot;}[5m]))
+</code></pre></div>
+<h3 id="32-errores-5xx-errores-del-servidor">3.2 — Errores 5xx (errores del servidor)<a class="headerlink" href="#32-errores-5xx-errores-del-servidor" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sum by (job, status) (rate(http_server_requests_seconds_count{status=~&quot;5..&quot;}[5m]))
+</code></pre></div>
+<p>✅ <strong>Esperado</strong>: 0 en estado normal.</p>
+<h3 id="33-provocar-errores-401-para-verificar">3.3 — Provocar errores 401 (para verificar)<a class="headerlink" href="#33-provocar-errores-401-para-verificar" title="Permanent link">&para;</a></h3>
+<p>En PowerShell:
+<div class="highlight"><pre><span></span><code><span class="c"># Sin token (genera 401 si productos requiere auth)</span>
+<span class="n">1</span><span class="p">..</span><span class="n">10</span> <span class="p">|</span> <span class="k">ForEach</span><span class="n">-Object</span> <span class="p">{</span>
+    <span class="k">try</span> <span class="p">{</span> <span class="nb">Invoke-WebRequest</span> <span class="n">-Uri</span> <span class="s2">&quot;http://localhost:7091/api/v1/productos&quot;</span> <span class="p">}</span> <span class="k">catch</span> <span class="p">{}</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p>Vuelve a ejecutar la query 3.1 → deben aparecer 401.</p>
+<hr />
+<h2 id="prueba-4-latencia">⏱️ PRUEBA 4 — LATENCIA<a class="headerlink" href="#prueba-4-latencia" title="Permanent link">&para;</a></h2>
+<h3 id="41-latencia-promedio-ms-por-servicio">4.1 — Latencia promedio (ms) por servicio<a class="headerlink" href="#41-latencia-promedio-ms-por-servicio" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sum by (job) (rate(http_server_requests_seconds_sum[1m])) / sum by (job) (rate(http_server_requests_seconds_count[1m])) * 1000
+</code></pre></div>
+<h3 id="42-percentil-95-los-mas-lentos">4.2 — Percentil 95 (los más lentos)<a class="headerlink" href="#42-percentil-95-los-mas-lentos" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>histogram_quantile(0.95, sum by (le, job) (rate(http_server_requests_seconds_bucket[5m]))) * 1000
+</code></pre></div>
+<h3 id="43-latencia-por-endpoint">4.3 — Latencia por endpoint<a class="headerlink" href="#43-latencia-por-endpoint" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sum by (uri) (rate(http_server_requests_seconds_sum[1m])) / sum by (uri) (rate(http_server_requests_seconds_count[1m])) * 1000
+</code></pre></div>
+<hr />
+<h2 id="prueba-5-recursos-jvm">💻 PRUEBA 5 — RECURSOS JVM<a class="headerlink" href="#prueba-5-recursos-jvm" title="Permanent link">&para;</a></h2>
+<h3 id="51-cpu-usado-por-cada-servicio">5.1 — % CPU usado por cada servicio<a class="headerlink" href="#51-cpu-usado-por-cada-servicio" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>avg by (job) (system_cpu_usage) * 100
+</code></pre></div>
+<h3 id="52-cpu-del-proceso-java">5.2 — % CPU del proceso Java<a class="headerlink" href="#52-cpu-del-proceso-java" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>avg by (job) (process_cpu_usage) * 100
+</code></pre></div>
+<h3 id="53-memoria-heap-mb">5.3 — Memoria HEAP (MB)<a class="headerlink" href="#53-memoria-heap-mb" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sum by (job) (jvm_memory_used_bytes{area=&quot;heap&quot;}) / 1024 / 1024
+</code></pre></div>
+<h3 id="54-de-heap-usado">5.4 — % de heap usado<a class="headerlink" href="#54-de-heap-usado" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sum by (job) (jvm_memory_used_bytes{area=&quot;heap&quot;}) / sum by (job) (jvm_memory_max_bytes{area=&quot;heap&quot;}) * 100
+</code></pre></div>
+<h3 id="55-threads-vivos">5.5 — Threads vivos<a class="headerlink" href="#55-threads-vivos" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>avg by (job) (jvm_threads_live_threads)
+</code></pre></div>
+<h3 id="56-garbage-collector-pausas">5.6 — Garbage Collector (pausas)<a class="headerlink" href="#56-garbage-collector-pausas" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sum by (job) (rate(jvm_gc_pause_seconds_sum[1m]))
+</code></pre></div>
+<h3 id="57-uptime-de-cada-servicio-segundos">5.7 — Uptime de cada servicio (segundos)<a class="headerlink" href="#57-uptime-de-cada-servicio-segundos" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>process_uptime_seconds
+</code></pre></div>
+<hr />
+<h2 id="prueba-6-logs-loki">📋 PRUEBA 6 — LOGS (Loki)<a class="headerlink" href="#prueba-6-logs-loki" title="Permanent link">&para;</a></h2>
+<p>📍 <strong>Explore</strong> → cambia datasource a <strong>Loki</strong> → rango <strong>Last 15 minutes</strong></p>
+<h3 id="71-verificar-que-cada-servicio-tenga-logs">7.1 — Verificar que cada servicio tenga logs<a class="headerlink" href="#71-verificar-que-cada-servicio-tenga-logs" title="Permanent link">&para;</a></h3>
+<p>Probar uno por uno:</p>
+<div class="highlight"><pre><span></span><code>{service=&quot;auth&quot;}
+{service=&quot;gateway&quot;}
+{service=&quot;catalogo&quot;}
+{service=&quot;producto&quot;}
+{service=&quot;pedido&quot;}
+{service=&quot;pago&quot;}
+</code></pre></div>
+<p>✅ Cada query debe devolver al menos 1 línea de log.</p>
+<h3 id="72-todos-los-logs-juntos">7.2 — Todos los logs juntos<a class="headerlink" href="#72-todos-los-logs-juntos" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>{job=~&quot;.+&quot;}
+</code></pre></div>
+<h3 id="73-solo-errores">7.3 — Solo errores<a class="headerlink" href="#73-solo-errores" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>{job=~&quot;.+&quot;} |= &quot;ERROR&quot;
+</code></pre></div>
+<h3 id="74-solo-warnings">7.4 — Solo warnings<a class="headerlink" href="#74-solo-warnings" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>{job=~&quot;.+&quot;} |= &quot;WARN&quot;
+</code></pre></div>
+<h3 id="75-filtros-especificos-del-proyecto">7.5 — Filtros específicos del proyecto<a class="headerlink" href="#75-filtros-especificos-del-proyecto" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>{service=&quot;auth&quot;}     |= &quot;login&quot;
+{service=&quot;producto&quot;} |= &quot;PRODUCTO&quot;
+{service=&quot;pedido&quot;}   |= &quot;Pago PENDIENTE registrado&quot;
+{service=&quot;pago&quot;}     |= &quot;Registro de pago&quot;
+{service=&quot;gateway&quot;}  |= &quot;GATEWAY&quot;
+</code></pre></div>
+<h3 id="76-cuando-arrancan-los-servicios">7.6 — Cuando arrancan los servicios<a class="headerlink" href="#76-cuando-arrancan-los-servicios" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>{job=~&quot;.+&quot;} |= &quot;Started&quot;
+</code></pre></div>
+<h3 id="67-flujo-pedido-pago-feign">6.7 — Flujo pedido -&gt; pago (Feign)<a class="headerlink" href="#67-flujo-pedido-pago-feign" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>{service=&quot;pedido&quot;} |= &quot;Pago PENDIENTE registrado&quot;
+{service=&quot;pago&quot;}   |= &quot;Registro de pago&quot;
+</code></pre></div>
+<hr />
+<h2 id="prueba-7-importar-dashboards-listos">🎨 PRUEBA 7 — IMPORTAR DASHBOARDS LISTOS<a class="headerlink" href="#prueba-7-importar-dashboards-listos" title="Permanent link">&para;</a></h2>
+<p>📍 Menú izquierdo → <strong>Dashboards</strong> → botón <strong>New</strong> → <strong>Import</strong></p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Nombre</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>4701</strong></td>
+<td>JVM (Micrometer)</td>
+<td>CPU, memoria, threads, GC por servicio</td>
+</tr>
+<tr>
+<td><strong>12900</strong></td>
+<td>Spring Boot APM Dashboard</td>
+<td>Latencia, throughput, errores</td>
+</tr>
+<tr>
+<td><strong>14430</strong></td>
+<td>Spring Boot Statistics</td>
+<td>Alternativo</td>
+</tr>
+<tr>
+<td><strong>7362</strong></td>
+<td>MySQL Overview</td>
+<td>Bases de datos (si las quieres ver)</td>
+</tr>
+</tbody>
+</table>
+<p>Pasos:
+1. Click <strong>New</strong> → <strong>Import</strong>
+2. En <strong>Find and import dashboards</strong> escribe: <code>4701</code>
+3. Click <strong>Load</strong>
+4. En <strong>Prometheus</strong> dropdown selecciona <strong>Prometheus</strong>
+5. Click <strong>Import</strong></p>
+<p>✅ Verás un dashboard hermoso. Arriba derecha cambia entre los servicios con el selector.</p>
+<hr />
+<h2 id="prueba-9-crear-dashboard-propio">🛠️ PRUEBA 9 — CREAR DASHBOARD PROPIO<a class="headerlink" href="#prueba-9-crear-dashboard-propio" title="Permanent link">&para;</a></h2>
+<p>📍 <strong>Dashboards</strong> → <strong>New</strong> → <strong>New Dashboard</strong> → <strong>Add visualization</strong> → selecciona <strong>Prometheus</strong></p>
+<h3 id="panel-1-servicios-vivos">Panel 1 — Servicios vivos<a class="headerlink" href="#panel-1-servicios-vivos" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tipo</td>
+<td><strong>Stat</strong></td>
+</tr>
+<tr>
+<td>Título</td>
+<td>"Servicios UP"</td>
+</tr>
+<tr>
+<td>Query</td>
+<td><code>up</code></td>
+</tr>
+<tr>
+<td>Legend</td>
+<td><code>{{job}}</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="panel-2-trafico-por-servicio">Panel 2 — Tráfico por servicio<a class="headerlink" href="#panel-2-trafico-por-servicio" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tipo</td>
+<td><strong>Time series</strong></td>
+</tr>
+<tr>
+<td>Título</td>
+<td>"Requests/seg por servicio"</td>
+</tr>
+<tr>
+<td>Query</td>
+<td><code>sum by (job) (rate(http_server_requests_seconds_count[1m]))</code></td>
+</tr>
+<tr>
+<td>Legend</td>
+<td><code>{{job}}</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="panel-3-errores-5xx">Panel 3 — Errores 5xx<a class="headerlink" href="#panel-3-errores-5xx" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tipo</td>
+<td><strong>Time series</strong></td>
+</tr>
+<tr>
+<td>Título</td>
+<td>"Errores 5xx"</td>
+</tr>
+<tr>
+<td>Query</td>
+<td><code>sum by (job) (rate(http_server_requests_seconds_count{status=~"5.."}[5m]))</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="panel-4-memoria-heap-por-servicio">Panel 4 — Memoria heap por servicio<a class="headerlink" href="#panel-4-memoria-heap-por-servicio" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tipo</td>
+<td><strong>Time series</strong></td>
+</tr>
+<tr>
+<td>Título</td>
+<td>"Memoria heap (MB)"</td>
+</tr>
+<tr>
+<td>Query</td>
+<td><code>sum by (job) (jvm_memory_used_bytes{area="heap"}) / 1024 / 1024</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="panel-5-latencia-promedio">Panel 5 — Latencia promedio<a class="headerlink" href="#panel-5-latencia-promedio" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tipo</td>
+<td><strong>Time series</strong></td>
+</tr>
+<tr>
+<td>Título</td>
+<td>"Latencia promedio (ms)"</td>
+</tr>
+<tr>
+<td>Query</td>
+<td><code>sum by (job) (rate(http_server_requests_seconds_sum[1m])) / sum by (job) (rate(http_server_requests_seconds_count[1m])) * 1000</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="panel-6-logs-en-vivo-datasource-loki">Panel 6 — Logs en vivo (datasource Loki)<a class="headerlink" href="#panel-6-logs-en-vivo-datasource-loki" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tipo</td>
+<td><strong>Logs</strong></td>
+</tr>
+<tr>
+<td>Título</td>
+<td>"Logs en vivo"</td>
+</tr>
+<tr>
+<td>Datasource</td>
+<td><strong>Loki</strong></td>
+</tr>
+<tr>
+<td>Query</td>
+<td><code>{job=~".+"} \|= "ERROR"</code></td>
+</tr>
+</tbody>
+</table>
+<p>Guarda dashboard como: <strong>"MS2026 — Resumen"</strong></p>
+<hr />
+<h2 id="prueba-10-alertas">🚨 PRUEBA 10 — ALERTAS<a class="headerlink" href="#prueba-10-alertas" title="Permanent link">&para;</a></h2>
+<p>📍 Menú izquierdo → <strong>Alerting</strong> → <strong>Alert rules</strong> → <strong>+ New alert rule</strong></p>
+<h3 id="alerta-1-auth-caido">Alerta 1 — Auth caído<a class="headerlink" href="#alerta-1-auth-caido" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nombre</td>
+<td>"Auth caido"</td>
+</tr>
+<tr>
+<td>Datasource</td>
+<td>Prometheus</td>
+</tr>
+<tr>
+<td>Query A</td>
+<td><code>up{job="auth-dev"}</code></td>
+</tr>
+<tr>
+<td>Reduce B</td>
+<td>Last</td>
+</tr>
+<tr>
+<td>Threshold C</td>
+<td><code>IS BELOW 1</code></td>
+</tr>
+<tr>
+<td>Evaluate</td>
+<td>Every <code>30s</code> for <code>1m</code></td>
+</tr>
+<tr>
+<td>Folder</td>
+<td>General</td>
+</tr>
+<tr>
+<td>Annotations</td>
+<td>"Auth no responde. Login JWT no funciona."</td>
+</tr>
+</tbody>
+</table>
+<h3 id="alerta-2-gateway-caido">Alerta 2 — Gateway caído<a class="headerlink" href="#alerta-2-gateway-caido" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>up{job=&quot;gateway-dev&quot;}    →    IS BELOW 1
+</code></pre></div>
+<h3 id="alerta-3-errores-5xx-altos">Alerta 3 — Errores 5xx altos<a class="headerlink" href="#alerta-3-errores-5xx-altos" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sum by (job) (rate(http_server_requests_seconds_count{status=~&quot;5..&quot;}[1m]))   →   IS ABOVE 0.1
+</code></pre></div>
+<h3 id="alerta-4-memoria-heap-alta-80">Alerta 4 — Memoria heap alta (&gt;80%)<a class="headerlink" href="#alerta-4-memoria-heap-alta-80" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>max by (job) (jvm_memory_used_bytes{area=&quot;heap&quot;} / jvm_memory_max_bytes{area=&quot;heap&quot;}) * 100   →   IS ABOVE 80
+</code></pre></div>
+<h3 id="como-probar-alertas">Cómo probar alertas<a class="headerlink" href="#como-probar-alertas" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Asegura que el servicio está UP.</li>
+<li>Apaga el servicio (Ctrl+C).</li>
+<li>Espera la evaluación (1 min).</li>
+<li>Menú <strong>Alerting</strong> → <strong>Alert rules</strong> → la alerta cambia de estado a <strong>Firing</strong>.</li>
+</ol>
+<hr />
+<h2 id="prueba-11-variables-del-dashboard-avanzado">🎛️ PRUEBA 11 — VARIABLES DEL DASHBOARD (avanzado)<a class="headerlink" href="#prueba-11-variables-del-dashboard-avanzado" title="Permanent link">&para;</a></h2>
+<p>📍 Dashboard → ⚙️ <strong>Settings</strong> → <strong>Variables</strong> → <strong>New variable</strong></p>
+<h3 id="variable-servicio">Variable <code>servicio</code><a class="headerlink" href="#variable-servicio" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Name</td>
+<td><code>servicio</code></td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Query</td>
+</tr>
+<tr>
+<td>Datasource</td>
+<td>Prometheus</td>
+</tr>
+<tr>
+<td>Query</td>
+<td><code>label_values(up, job)</code></td>
+</tr>
+<tr>
+<td>Multi-value</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Include All option</td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>
+<p>Aplicar en queries usando <code>$servicio</code>:</p>
+<div class="highlight"><pre><span></span><code>sum by (job) (rate(http_server_requests_seconds_count{job=~&quot;$servicio&quot;}[1m]))
+</code></pre></div>
+<p>Arriba del dashboard aparecerá un selector para elegir qué servicio mirar.</p>
+<hr />
+<h2 id="prueba-12-exportar-importar-dashboard">📂 PRUEBA 12 — EXPORTAR / IMPORTAR DASHBOARD<a class="headerlink" href="#prueba-12-exportar-importar-dashboard" title="Permanent link">&para;</a></h2>
+<h3 id="exportar-compartir-con-tu-profe">Exportar (compartir con tu profe)<a class="headerlink" href="#exportar-compartir-con-tu-profe" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Abre tu dashboard</li>
+<li>⚙️ <strong>Settings</strong> → <strong>JSON Model</strong></li>
+<li>Copia todo el JSON</li>
+</ol>
+<h3 id="importar-de-un-json">Importar de un JSON<a class="headerlink" href="#importar-de-un-json" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Dashboards</strong> → <strong>New</strong> → <strong>Import</strong></li>
+<li>Pega el JSON en <strong>Import via panel json</strong></li>
+<li><strong>Load</strong> → <strong>Import</strong></li>
+</ol>
+<hr />
+<h2 id="checklist-de-sustentacion-para-mostrar-al-profe">✅ CHECKLIST DE SUSTENTACIÓN (para mostrar al profe)<a class="headerlink" href="#checklist-de-sustentacion-para-mostrar-al-profe" title="Permanent link">&para;</a></h2>
+<p>OBSERVABILIDAD MÍNIMA:
+- [ ] <strong>PRUEBA 0</strong>: Datasources Prometheus y Loki ambos working
+- [ ] <strong>PRUEBA 1.1</strong>: query <code>up</code> muestra todos los servicios en 1
+- [ ] <strong>PRUEBA 2.1</strong>: tráfico por servicio se mueve cuando lanzo peticiones
+- [ ] <strong>PRUEBA 3.2</strong>: errores 5xx en 0 (estado sano)
+- [ ] <strong>PRUEBA 4.1</strong>: latencia promedio visible
+- [ ] <strong>PRUEBA 5.3</strong>: memoria heap por servicio
+- [ ] <strong>PRUEBA 7.1</strong>: logs de los 6 servicios visibles en Loki</p>
+<p>OBSERVABILIDAD AVANZADA (para nota extra):
+- [ ] <strong>PRUEBA 7</strong>: Dashboard 4701 importado y funcionando
+- [ ] <strong>PRUEBA 8</strong>: Dashboard propio "MS2026 — Resumen" creado
+- [ ] <strong>PRUEBA 9</strong>: Alerta "Auth caido" creada y probada</p>
+<p>DEMOSTRACIÓN EN VIVO:
+- [ ] Apagar catalogo → ver query 1.1 cambiar (catalogo-dev = 0)
+- [ ] Apagar catalogo → ver alerta cambiar a Firing
+- [ ] Crear pedido → ver log en Loki <code>{service="pago"} |= "Registro de pago"</code>
+- [ ] Provocar 401 → ver errores 4xx subir en query 3.1</p>
+<hr />
+<h2 id="secuencia-recomendada-para-sustentacion-5-minutos">🎯 SECUENCIA RECOMENDADA PARA SUSTENTACIÓN (5 minutos)<a class="headerlink" href="#secuencia-recomendada-para-sustentacion-5-minutos" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>1. Abrir Grafana                                       (10s)
+2. Ir a Explore → Prometheus → query &quot;up&quot;              (30s)
+   &quot;Aquí veo que todos mis 6 microservicios están UP&quot;
+3. Lanzar tráfico desde PowerShell                     (30s)
+4. Query &quot;rate(http_server_requests_seconds_count...&quot;  (1min)
+   &quot;Aquí veo el tráfico en vivo de cada microservicio&quot;
+5. Ir a Explore → Loki → {service=&quot;pago&quot;}              (30s)
+   &quot;Aquí veo los logs centralizados de mis servicios&quot;
+6. Mostrar dashboard 4701 importado                    (1min)
+   &quot;Importé este dashboard para JVM&quot;
+7. Ir a Alerting → mostrar alertas creadas             (1min)
+   &quot;Tengo alertas configuradas: auth caido, errores 5xx, heap alto&quot;
+</code></pre></div>
+<hr />
+<h2 id="troubleshooting">🆘 TROUBLESHOOTING<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Problema</th>
+<th>Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Datasource Prometheus no funciona</td>
+<td>Verifica que prometheus esté UP: <code>docker ps</code></td>
+</tr>
+<tr>
+<td>Loki sin logs</td>
+<td>Verifica que promtail esté UP y que <code>services/*/logs/*.log</code> existan</td>
+</tr>
+<tr>
+<td>Query no devuelve datos</td>
+<td>Genera tráfico primero, espera 30s, baja el rango a 5 min</td>
+</tr>
+<tr>
+<td>Dashboard 4701 vacío</td>
+<td>Cambia el filtro de "Application" arriba a un servicio que SÍ exista</td>
+</tr>
+<tr>
+<td>Alerta no se dispara</td>
+<td>Verifica que la condición sea correcta y espera el tiempo <code>for</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="cheat-sheet-de-queries-lo-mas-usado">📚 CHEAT SHEET DE QUERIES (lo más usado)<a class="headerlink" href="#cheat-sheet-de-queries-lo-mas-usado" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code># DISPONIBILIDAD
+up                                              → ¿servicios vivos?
+up{job=&quot;auth-dev&quot;}                              → ¿auth vivo?
+
+# TRÁFICO
+sum by (job) (rate(http_server_requests_seconds_count[1m]))
+topk(5, sum by (uri) (rate(http_server_requests_seconds_count[5m])))
+
+# ERRORES
+sum by (job) (rate(http_server_requests_seconds_count{status=~&quot;5..&quot;}[5m]))
+
+# LATENCIA
+sum by (job) (rate(http_server_requests_seconds_sum[1m])) / sum by (job) (rate(http_server_requests_seconds_count[1m])) * 1000
+
+# RECURSOS
+avg by (job) (system_cpu_usage) * 100
+sum by (job) (jvm_memory_used_bytes{area=&quot;heap&quot;}) / 1024 / 1024
+avg by (job) (jvm_threads_live_threads)
+
+# LOKI
+{service=&quot;auth&quot;} |= &quot;login&quot;
+{job=~&quot;.+&quot;} |= &quot;ERROR&quot;
+{service=&quot;pago&quot;} |= &quot;Registro de pago&quot;
+</code></pre></div>
+<hr />
+<h2 id="fin">FIN<a class="headerlink" href="#fin" title="Permanent link">&para;</a></h2>
+<p>Esta guía cubre <strong>todo lo que necesitas mostrar de Grafana</strong> en tu sustentación. Cubre métricas, logs y alertas — los 3 pilares de observabilidad.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.sections", "toc.integrate", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@10/dist/mermaid.min.js"></script>
+      
+        <script src="../../javascripts/mermaid.js"></script>
+      
+    
+  </body>
+</html>
