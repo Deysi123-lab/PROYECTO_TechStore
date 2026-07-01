@@ -95,3 +95,7 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# ===== MkDocs build output =====
+docs-site/site/
+_site-deploy/

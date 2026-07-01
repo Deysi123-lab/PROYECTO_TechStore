@@ -1,0 +1,61 @@
+site_name: TechStore - Proyecto MS 2026
+site_description: Documentación del e-commerce TechStore con microservicios Spring Cloud
+site_url: https://deysi123-lab.github.io/PROYECTO_TechStore/
+repo_url: https://github.com/Deysi123-lab/PROYECTO_TechStore
+repo_name: PROYECTO_TechStore
+docs_dir: docs
+
+nav:
+  - Inicio: index.md
+  - Guías del proyecto:
+      - Arranque y endpoints: guias/arranque.md
+      - Pruebas: guias/pruebas.md
+      - Kafka: guias/kafka.md
+      - Prometheus: guias/prometheus.md
+      - Grafana: guias/grafana.md
+  - Arquitectura:
+      - Visión general: arquitectura/general.md
+      - Infraestructura: arquitectura/infra.md
+      - Microservicios: arquitectura/servicios.md
+      - Frontend: arquitectura/frontend.md
+  - Validación y consolidación:
+      - S13 - Validación end-to-end: sesiones/s13-validacion.md
+      - S14 - Revisión técnica: sesiones/s14-revision.md
+      - S15 - Defensa técnica: sesiones/s15-defensa-tecnica.md
+      - S16 - Evaluación final: sesiones/s16-evaluacion.md
+
+theme:
+  name: material
+  language: es
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.top
+    - navigation.sections
+    - toc.integrate
+    - content.code.copy
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - pymdownx.details
+  - tables
+  - toc:
+      permalink: true
+
+plugins:
+  - search
+
+extra_javascript:
+  - https://unpkg.com/mermaid@10/dist/mermaid.min.js
+  - javascripts/mermaid.js
