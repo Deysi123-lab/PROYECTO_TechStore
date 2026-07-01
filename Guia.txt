@@ -16,23 +16,29 @@ ORDEN DE ARRANQUE (PROD / docker compose)
    # Grafana:     http://localhost:13000  (admin/admin)
    # Loki:        http://localhost:23100
 
-3) AUTH SERVICE
+3) KAFKA (broker, exporter, kafka-ui)
+   cd ..\kafka
+   docker compose -f docker-compose-dev.yml up -d
+   # Kafka:       localhost:41092
+   # Kafka UI:    http://localhost:41085
+
+4) AUTH SERVICE
    cd ..\services\auth
    docker compose up -d --build
 
-4) CATALOGO SERVICE
+5) CATALOGO SERVICE
    cd ..\catalogo
    docker compose up -d --build
 
-5) PRODUCTO SERVICE
+6) PRODUCTO SERVICE
    cd ..\producto
    docker compose up -d --build
 
-6) PEDIDO SERVICE
+7) PEDIDO SERVICE
    cd ..\pedido
    docker compose up -d --build
 
-7) PAGO SERVICE
+8) PAGO SERVICE
    cd ..\pago
    docker compose up -d --build
 
@@ -42,6 +48,7 @@ ORDEN DE ARRANQUE (DEV / desde IDE)
 
 Levanta SOLO las dependencias en Docker (-dev):
    cd observability     && docker compose -f docker-compose-dev.yml up -d
+   cd ..\kafka           && docker compose -f docker-compose-dev.yml up -d
    cd ..\services\auth     && docker compose -f docker-compose-dev.yml up -d
    cd ..\catalogo          && docker compose -f docker-compose-dev.yml up -d
    cd ..\producto          && docker compose -f docker-compose-dev.yml up -d
